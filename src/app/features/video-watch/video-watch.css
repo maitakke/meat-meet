@@ -1,7 +1,168 @@
 .video-watch {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 32px 24px;
+  font-family: 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', 'Yu Gothic', sans-serif;
+  color: #3a3226;
+  background-color: #faf3e7;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg%3E%3Ccircle cx='20' cy='24' r='9' fill='%23f4b93a'/%3E%3Cpolygon points='70,10 82,32 58,32' fill='%23f2603c'/%3E%3Crect x='108' y='14' width='16' height='16' rx='4' fill='%234fb6e0'/%3E%3Ccircle cx='115' cy='75' r='6' fill='%236fae5c'/%3E%3Cpolygon points='30,80 42,102 18,102' fill='%23f2a5b3'/%3E%3Crect x='55' y='95' width='14' height='14' rx='4' fill='%23f4b93a'/%3E%3Ccircle cx='90' cy='115' r='8' fill='%234fb6e0'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.video-frame {
+  padding: 16px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 6px solid #3a3226;
+  box-shadow: 6px 6px 0 #3a3226;
+}
+
+.video-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 640px;
+  padding: 20px 24px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 3px solid #3a3226;
+}
+
+.channel-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.channel-row__avatar {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  padding: 24px;
+  width: 48px;
+  height: 48px;
+  font-size: 1.6rem;
+  border-radius: 50%;
+  background: #f4b93a;
+  border: 2px solid #3a3226;
+}
+
+.channel-row__name {
+  flex: 1;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.subscribe-button {
+  font-size: 1rem;
+  padding: 10px 20px;
+  border: 2px solid #3a3226;
+  border-radius: 16px;
+  background: #f2603c;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #3a3226;
+}
+
+.subscribe-button--active {
+  background: #f2e9da;
+  color: #3a3226;
+}
+
+.subscribe-button:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.like-button {
+  align-self: flex-start;
+  font-size: 1.1rem;
+  padding: 12px 24px;
+  border: 2px solid #3a3226;
+  border-radius: 16px;
+  background: #fff;
+  color: #3a3226;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #3a3226;
+}
+
+.like-button--active {
+  background: #4fb6e0;
+  color: #fff;
+}
+
+.like-button:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 3px dashed #3a3226;
+}
+
+.comments__title {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.comments__form {
+  display: flex;
+  gap: 8px;
+}
+
+.comments__input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid #3a3226;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #faf3e7;
+}
+
+.comments__submit {
+  padding: 10px 20px;
+  border: 2px solid #3a3226;
+  border-radius: 16px;
+  background: #f4b93a;
+  color: #3a3226;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #3a3226;
+}
+
+.comments__submit:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.comments__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comments__item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #faf3e7;
+  border-left: 5px solid #6fae5c;
+  border-radius: 8px;
+}
+
+.comments__author {
+  font-weight: bold;
+  color: #f2603c;
 }
 
 .end-screen {
@@ -12,21 +173,26 @@
   gap: 24px;
   width: 640px;
   height: 360px;
-  background: #263238;
-  border-radius: 16px;
+  border-radius: 24px;
+  background: #faf3e7;
+  border: 6px solid #3a3226;
+  box-shadow: 6px 6px 0 #3a3226;
 }
 
 .end-screen__button {
   font-size: 1.8rem;
   padding: 20px 40px;
-  border: none;
-  border-radius: 999px;
-  background: #ffd54f;
-  color: #333;
+  border: 3px solid #3a3226;
+  border-radius: 20px;
+  background: #4fb6e0;
+  color: #fff;
+  font-weight: bold;
   cursor: pointer;
   min-width: 320px;
+  box-shadow: 4px 4px 0 #3a3226;
 }
 
 .end-screen__button:active {
-  transform: scale(0.96);
+  transform: translate(4px, 4px);
+  box-shadow: none;
 }
