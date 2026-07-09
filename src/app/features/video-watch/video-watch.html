@@ -1,0 +1,20 @@
+<div class="video-watch">
+  @if (!showEndScreen()) {
+    <youtube-player
+      [videoId]="videoId()"
+      [playerVars]="playerVars"
+      [width]="640"
+      [height]="360"
+      (stateChange)="onStateChange($event)"
+    ></youtube-player>
+  } @else {
+    <div class="end-screen">
+      <button type="button" class="end-screen__button" (click)="onReplay()">
+        🔄 もういっかい みる
+      </button>
+      <button type="button" class="end-screen__button" (click)="onBackToList()">
+        🏠 ほかの いちらんに もどる
+      </button>
+    </div>
+  }
+</div>
