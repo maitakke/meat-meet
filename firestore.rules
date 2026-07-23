@@ -34,7 +34,12 @@ service cloud.firestore {
         allow read: if isSignedIn()
           && canReadVideo(get(/databases/$(database)/documents/videos/$(videoId)).data);
         allow create: if isSignedIn() && request.auth.uid == request.resource.data.familyId;
-        allow update, delete: if isSignedIn() && request.auth.uid == resource.data.familyId;
+        allow update: if isSignedIn() && request.auth.uid == resource.data.familyId;
+        // 削除は「コメントの投稿者本人」または「動画の所有家族(退会時の一括削除・モデレーション用)」に許可する。
+        allow delete: if isSignedIn() && (
+          request.auth.uid == resource.data.familyId
+          || request.auth.uid == get(/databases/$(database)/documents/videos/$(videoId)).data.familyId
+        );
       }
     }
 
@@ -51,7 +56,11 @@ service cloud.firestore {
       allow create: if isSignedIn()
         && request.auth.uid == request.resource.data.familyId
         && subscriptionId == request.resource.data.channelId + '_' + request.resource.data.userId;
-      allow delete: if isSignedIn() && request.auth.uid == resource.data.familyId;
+      // 削除は「登録した本人」または「チャンネルの所有家族(退会・チャンネル削除時の一括削除用)」に許可する。
+      allow delete: if isSignedIn() && (
+        request.auth.uid == resource.data.familyId
+        || request.auth.uid == get(/databases/$(database)/documents/channels/$(resource.data.channelId)).data.familyId
+      );
     }
 
     // 5. likes ("${videoId}_${userId}")
@@ -60,7 +69,11 @@ service cloud.firestore {
       allow create: if isSignedIn()
         && request.auth.uid == request.resource.data.familyId
         && likeId == request.resource.data.videoId + '_' + request.resource.data.userId;
-      allow delete: if isSignedIn() && request.auth.uid == resource.data.familyId;
+      // 削除は「いいねした本人」または「動画の所有家族(退会時の一括削除用)」に許可する。
+      allow delete: if isSignedIn() && (
+        request.auth.uid == resource.data.familyId
+        || request.auth.uid == get(/databases/$(database)/documents/videos/$(resource.data.videoId)).data.familyId
+      );
     }
   }
 }

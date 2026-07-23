@@ -126,4 +126,29 @@ export class ChannelService {
       (d) => (d.data() as ChannelSubscription).channelId
     );
   }
+
+  private async deleteSubscriptionsForChannel(channelId: string): Promise<void> {
+    const q = query(
+      collection(this.firestore, 'channel_subscriptions'),
+      where('channelId', '==', channelId)
+    );
+    const snapshot = await getDocs(q);
+    await Promise.all(snapshot.docs.map((d) => deleteDoc(d.ref)));
+  }
+
+  /** チャンネルを削除する。フォロー(登録)記録も合わせて削除する。 */
+  async deleteChannel(channelId: string): Promise<void> {
+    await this.deleteSubscriptionsForChannel(channelId);
+    await deleteDoc(doc(this.firestore, 'channels', channelId));
+  }
+
+  /** この家族(のユーザー)がどのチャンネルにつけたフォローも全件削除する(退会時のカスケード用)。 */
+  async deleteAllSubscriptionsByFamily(familyId: string): Promise<void> {
+    const q = query(
+      collection(this.firestore, 'channel_subscriptions'),
+      where('familyId', '==', familyId)
+    );
+    const snapshot = await getDocs(q);
+    await Promise.all(snapshot.docs.map((d) => deleteDoc(d.ref)));
+  }
 }

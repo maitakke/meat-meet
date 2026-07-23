@@ -4,8 +4,11 @@ import { Router } from '@angular/router';
 import { AVATAR_PRESETS } from '../../core/avatar-presets';
 import { FamilyUser, FamilyUserRole } from '../../core/models';
 import { AuthService } from '../../core/services/auth.service';
+import { ChannelService } from '../../core/services/channel.service';
 import { FamilyService } from '../../core/services/family.service';
+import { LikeService } from '../../core/services/like.service';
 import { SessionService } from '../../core/services/session.service';
+import { VideoService } from '../../core/services/video.service';
 
 @Component({
   selector: 'app-account-settings',
@@ -15,6 +18,9 @@ import { SessionService } from '../../core/services/session.service';
 })
 export class AccountSettings {
   private readonly familyService = inject(FamilyService);
+  private readonly videoService = inject(VideoService);
+  private readonly likeService = inject(LikeService);
+  private readonly channelService = inject(ChannelService);
   private readonly authService = inject(AuthService);
   private readonly sessionService = inject(SessionService);
   private readonly router = inject(Router);
@@ -121,12 +127,31 @@ export class AccountSettings {
 
     this.isDeletingAccount.set(true);
     try {
+      // ①自分がどこかにつけたコメント・いいね・チャンネル登録をすべて削除
+      await Promise.all([
+        this.videoService.deleteAllCommentsByFamily(familyId),
+        this.likeService.deleteAllLikesByFamily(familyId),
+        this.channelService.deleteAllSubscriptionsByFamily(familyId),
+      ]);
+
+      // ②自分が投稿した動画を削除(他家族がつけたコメント・いいねも合わせて削除される)
+      const myVideos = await this.videoService.listVideosByFamily(familyId);
+      await Promise.all(myVideos.map((video) => this.videoService.deleteVideo(video.id)));
+
+      // ③自分が作成したチャンネルを削除(他家族のフォロー記録も合わせて削除される)
+      const myChannels = await this.channelService.listChannelsByFamily(familyId);
+      await Promise.all(
+        myChannels.map((channel) => this.channelService.deleteChannel(channel.id))
+      );
+
+      // ④ファミリーユーザー・家族ドキュメント・Authアカウントを削除
       const users = this.sessionService.familyUsers();
       await Promise.all(
         users.map((user) => this.familyService.deleteFamilyUser(familyId, user.id))
       );
       await this.familyService.deleteFamily(familyId);
       await this.authService.deleteCurrentAccount();
+
       this.sessionService.clear();
       await this.router.navigateByUrl('/login');
     } finally {
