@@ -1,13 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { AccountSettings } from './features/account-settings/account-settings';
-import { Login } from './features/auth/login/login';
-import { Register } from './features/auth/register/register';
-import { SelectUser } from './features/auth/select-user/select-user';
-import { MyPage } from './features/my-page/my-page';
-import { Search } from './features/search/search';
-import { VideoList } from './features/video-list/video-list';
-import { VideoWatch } from './features/video-watch/video-watch';
 import {
   authGuard,
   guestGuard,
@@ -17,24 +9,53 @@ import {
 } from './core/guards/session.guards';
 
 export const routes: Routes = [
-  { path: 'register', component: Register, canActivate: [guestGuard] },
-  { path: 'login', component: Login, canActivate: [guestGuard] },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./features/auth/register/register').then((m) => m.Register),
+    canActivate: [guestGuard],
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+    canActivate: [guestGuard],
+  },
   {
     path: 'select-user',
-    component: SelectUser,
+    loadComponent: () =>
+      import('./features/auth/select-user/select-user').then((m) => m.SelectUser),
     canActivate: [selectUserPageGuard],
   },
   {
     path: '',
     canActivate: [authGuard, userSelectedGuard],
     children: [
-      { path: '', component: VideoList },
-      { path: 'watch/:id', component: VideoWatch },
-      { path: 'search', component: Search },
-      { path: 'mypage', component: MyPage, canActivate: [parentGuard] },
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/video-list/video-list').then((m) => m.VideoList),
+      },
+      {
+        path: 'watch/:id',
+        loadComponent: () =>
+          import('./features/video-watch/video-watch').then((m) => m.VideoWatch),
+      },
+      {
+        path: 'search',
+        loadComponent: () => import('./features/search/search').then((m) => m.Search),
+      },
+      {
+        path: 'mypage',
+        loadComponent: () =>
+          import('./features/my-page/my-page').then((m) => m.MyPage),
+        canActivate: [parentGuard],
+      },
       {
         path: 'settings',
-        component: AccountSettings,
+        loadComponent: () =>
+          import('./features/account-settings/account-settings').then(
+            (m) => m.AccountSettings
+          ),
         canActivate: [parentGuard],
       },
     ],
