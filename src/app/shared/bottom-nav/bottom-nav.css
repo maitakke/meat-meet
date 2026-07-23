@@ -1,0 +1,34 @@
+.bottom-nav {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 4px;
+  font-family: 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', 'Yu Gothic', sans-serif;
+  background: #ffffff;
+  border-top: 4px solid #3a3226;
+}
+
+.bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  color: #3a3226;
+  text-decoration: none;
+}
+
+.bottom-nav__item--active {
+  background: #f4b93a;
+}
+
+.bottom-nav__icon {
+  font-size: 1.4rem;
+}
+
+.bottom-nav__label {
+  font-size: 0.7rem;
+  font-weight: bold;
+}

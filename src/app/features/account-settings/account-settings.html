@@ -1,0 +1,130 @@
+<div class="settings-page">
+  <h1 class="settings-page__title">⚙️ {{ family()?.familyName }}の せってい</h1>
+
+  <section class="settings-section">
+    <h2 class="settings-section__title">👨‍👩‍👧 かぞくメンバー</h2>
+    <ul class="member-list">
+      @for (user of familyUsers(); track user.id) {
+        <li class="member-list__item">
+          @if (editingUserId() === user.id) {
+            <div class="member-edit">
+              <input
+                class="member-edit__input"
+                type="text"
+                [value]="editName()"
+                (input)="onEditNameInput($event)"
+              />
+              <div class="avatar-grid">
+                @for (avatar of avatarPresets; track avatar) {
+                  <button
+                    type="button"
+                    class="avatar-grid__item"
+                    [class.avatar-grid__item--active]="editAvatar() === avatar"
+                    (click)="editAvatar.set(avatar)"
+                  >
+                    {{ avatar }}
+                  </button>
+                }
+              </div>
+              <div class="role-choice">
+                <button
+                  type="button"
+                  class="role-choice__button"
+                  [class.role-choice__button--active]="editRole() === 'parent'"
+                  (click)="editRole.set('parent')"
+                >
+                  ほごしゃ
+                </button>
+                <button
+                  type="button"
+                  class="role-choice__button"
+                  [class.role-choice__button--active]="editRole() === 'child'"
+                  (click)="editRole.set('child')"
+                >
+                  こども
+                </button>
+              </div>
+              <div class="member-edit__actions">
+                <button type="button" class="member-edit__save" (click)="onSaveEdit()">ほぞん</button>
+                <button type="button" class="member-edit__cancel" (click)="onCancelEdit()">やめる</button>
+              </div>
+            </div>
+          } @else {
+            <span class="member-list__avatar">{{ user.avatarUrl }}</span>
+            <span class="member-list__name">{{ user.name }}</span>
+            <span class="member-list__role">{{ user.role === 'parent' ? 'ほごしゃ' : 'こども' }}</span>
+            <button type="button" class="member-list__button" (click)="onStartEdit(user)">へんしゅう</button>
+            <button
+              type="button"
+              class="member-list__button member-list__button--danger"
+              (click)="onDeleteUser(user)"
+            >
+              けす
+            </button>
+          }
+        </li>
+      }
+    </ul>
+  </section>
+
+  <section class="settings-section">
+    <h2 class="settings-section__title">➕ あたらしい かぞくメンバー</h2>
+    <form class="add-member-form" (submit)="$event.preventDefault(); onAddUser()">
+      <input
+        class="add-member-form__input"
+        type="text"
+        placeholder="なまえ"
+        [value]="newName()"
+        (input)="onNewNameInput($event)"
+      />
+      <div class="avatar-grid">
+        @for (avatar of avatarPresets; track avatar) {
+          <button
+            type="button"
+            class="avatar-grid__item"
+            [class.avatar-grid__item--active]="newAvatar() === avatar"
+            (click)="newAvatar.set(avatar)"
+          >
+            {{ avatar }}
+          </button>
+        }
+      </div>
+      <div class="role-choice">
+        <button
+          type="button"
+          class="role-choice__button"
+          [class.role-choice__button--active]="newRole() === 'parent'"
+          (click)="newRole.set('parent')"
+        >
+          ほごしゃ
+        </button>
+        <button
+          type="button"
+          class="role-choice__button"
+          [class.role-choice__button--active]="newRole() === 'child'"
+          (click)="newRole.set('child')"
+        >
+          こども
+        </button>
+      </div>
+      <button type="submit" class="add-member-form__submit" [disabled]="isAdding()">
+        {{ isAdding() ? 'ついかちゅう…' : 'ついかする' }}
+      </button>
+    </form>
+  </section>
+
+  <section class="settings-section settings-section--danger">
+    <h2 class="settings-section__title">🚪 たいかい</h2>
+    <p class="settings-section__caption">
+      アカウントを さくじょすると、かぞくの データは すべて きえて もとに もどせません。
+    </p>
+    <button
+      type="button"
+      class="danger-button"
+      [disabled]="isDeletingAccount()"
+      (click)="onDeleteAccount()"
+    >
+      {{ isDeletingAccount() ? 'さくじょちゅう…' : 'たいかいする' }}
+    </button>
+  </section>
+</div>

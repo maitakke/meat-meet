@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import {
   User,
   createUserWithEmailAndPassword,
+  deleteUser,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
@@ -57,5 +58,13 @@ export class AuthService {
 
   async signOutUser(): Promise<void> {
     await signOut(this.auth);
+  }
+
+  /** Firebase Authのアカウント自体を削除する(退会)。事前にFirestore側のデータ削除を済ませておくこと。 */
+  async deleteCurrentAccount(): Promise<void> {
+    const user = this.auth.currentUser;
+    if (user) {
+      await deleteUser(user);
+    }
   }
 }

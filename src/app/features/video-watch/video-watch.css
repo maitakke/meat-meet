@@ -18,6 +18,11 @@
   box-shadow: 6px 6px 0 #3a3226;
 }
 
+.video-watch__message {
+  font-size: 1.1rem;
+  padding: 48px 0;
+}
+
 .video-panel {
   display: flex;
   flex-direction: column;
@@ -27,6 +32,11 @@
   border-radius: 20px;
   background: #ffffff;
   border: 3px solid #3a3226;
+}
+
+.video-panel__title {
+  margin: 0;
+  font-size: 1.3rem;
 }
 
 .channel-row {

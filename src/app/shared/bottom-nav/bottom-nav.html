@@ -1,0 +1,22 @@
+@if (selectedUser()) {
+  <nav class="bottom-nav">
+    <a class="bottom-nav__item" routerLink="/" routerLinkActive="bottom-nav__item--active" [routerLinkActiveOptions]="{ exact: true }">
+      <span class="bottom-nav__icon">🏠</span>
+      <span class="bottom-nav__label">ホーム</span>
+    </a>
+    <a class="bottom-nav__item" routerLink="/search" routerLinkActive="bottom-nav__item--active">
+      <span class="bottom-nav__icon">🔍</span>
+      <span class="bottom-nav__label">けんさく</span>
+    </a>
+    @if (!isChild()) {
+      <a class="bottom-nav__item" routerLink="/mypage" routerLinkActive="bottom-nav__item--active">
+        <span class="bottom-nav__icon">📮</span>
+        <span class="bottom-nav__label">マイページ</span>
+      </a>
+      <a class="bottom-nav__item" routerLink="/settings" routerLinkActive="bottom-nav__item--active">
+        <span class="bottom-nav__icon">⚙️</span>
+        <span class="bottom-nav__label">せってい</span>
+      </a>
+    }
+  </nav>
+}

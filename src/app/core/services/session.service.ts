@@ -44,6 +44,21 @@ export class SessionService {
     }
   }
 
+  /** アカウント設定画面でのユーザー追加・編集・削除後に一覧を再取得する。 */
+  async refreshFamilyUsers(): Promise<void> {
+    const familyId = this.family()?.id;
+    if (!familyId) {
+      return;
+    }
+    const users = await this.familyService.listFamilyUsers(familyId);
+    this.familyUsers.set(users);
+
+    const selected = this.selectedUser();
+    if (selected && !users.some((user) => user.id === selected.id)) {
+      this.deselectUser();
+    }
+  }
+
   selectUser(user: FamilyUser): void {
     this.selectedUser.set(user);
     sessionStorage.setItem(SELECTED_USER_KEY, user.id);

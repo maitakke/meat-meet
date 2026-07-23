@@ -1,72 +1,82 @@
 <div class="video-watch">
-  @if (!showEndScreen()) {
-    <div class="video-frame">
-      <youtube-player
-        [videoId]="videoId()"
-        [playerVars]="playerVars"
-        [width]="640"
-        [height]="360"
-        (stateChange)="onStateChange($event)"
-      ></youtube-player>
-    </div>
+  @if (isLoading()) {
+    <p class="video-watch__message">よみこみちゅう…</p>
+  } @else if (video(); as v) {
+    @if (!showEndScreen()) {
+      <div class="video-frame">
+        <youtube-player
+          [videoId]="v.youtubeId"
+          [playerVars]="playerVars"
+          [width]="640"
+          [height]="360"
+          (stateChange)="onStateChange($event)"
+        ></youtube-player>
+      </div>
 
-    <div class="video-panel">
-      <div class="channel-row">
-        <span class="channel-row__avatar">🐷</span>
-        <span class="channel-row__name">{{ channelName() }}</span>
+      <div class="video-panel">
+        <h1 class="video-panel__title">{{ v.title }}</h1>
+
+        @if (channel(); as ch) {
+          <div class="channel-row">
+            <span class="channel-row__avatar">📺</span>
+            <span class="channel-row__name">{{ ch.channelName }}</span>
+            <button
+              type="button"
+              class="subscribe-button"
+              [class.subscribe-button--active]="isSubscribed()"
+              (click)="onToggleSubscribe()"
+            >
+              {{ isSubscribed() ? '✅ とうろくずみ' : '🔔 チャンネルとうろく' }}
+            </button>
+          </div>
+        }
+
         <button
           type="button"
-          class="subscribe-button"
-          [class.subscribe-button--active]="isSubscribed()"
-          (click)="onToggleSubscribe()"
+          class="like-button"
+          [class.like-button--active]="isLiked()"
+          (click)="onToggleLike()"
         >
-          {{ isSubscribed() ? '✅ とうろくずみ' : '🔔 チャンネルとうろく' }}
+          {{ isLiked() ? '❤️' : '🤍' }} いいね {{ likeCount() }}
+        </button>
+
+        <div class="comments">
+          <h2 class="comments__title">コメント</h2>
+
+          <div class="comments__form">
+            <input
+              class="comments__input"
+              type="text"
+              placeholder="コメントをかいてみよう"
+              [value]="newComment()"
+              (input)="onCommentInput($event)"
+            />
+            <button type="button" class="comments__submit" (click)="onAddComment()">
+              そうしん
+            </button>
+          </div>
+
+          <ul class="comments__list">
+            @for (comment of comments(); track comment.id) {
+              <li class="comments__item">
+                <span class="comments__author">{{ comment.userName }}（{{ comment.familyName }}）</span>
+                <span class="comments__text">{{ comment.content }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    } @else {
+      <div class="end-screen">
+        <button type="button" class="end-screen__button" (click)="onReplay()">
+          🔄 もういっかい みる
+        </button>
+        <button type="button" class="end-screen__button" (click)="onBackToList()">
+          🏠 ほかの いちらんに もどる
         </button>
       </div>
-
-      <button
-        type="button"
-        class="like-button"
-        [class.like-button--active]="isLiked()"
-        (click)="onToggleLike()"
-      >
-        {{ isLiked() ? '❤️' : '🤍' }} いいね {{ likeCount() }}
-      </button>
-
-      <div class="comments">
-        <h2 class="comments__title">コメント</h2>
-
-        <div class="comments__form">
-          <input
-            class="comments__input"
-            type="text"
-            placeholder="コメントをかいてみよう"
-            [value]="newComment()"
-            (input)="onCommentInput($event)"
-          />
-          <button type="button" class="comments__submit" (click)="onAddComment()">
-            そうしん
-          </button>
-        </div>
-
-        <ul class="comments__list">
-          @for (comment of comments(); track $index) {
-            <li class="comments__item">
-              <span class="comments__author">{{ comment.author }}</span>
-              <span class="comments__text">{{ comment.text }}</span>
-            </li>
-          }
-        </ul>
-      </div>
-    </div>
+    }
   } @else {
-    <div class="end-screen">
-      <button type="button" class="end-screen__button" (click)="onReplay()">
-        🔄 もういっかい みる
-      </button>
-      <button type="button" class="end-screen__button" (click)="onBackToList()">
-        🏠 ほかの いちらんに もどる
-      </button>
-    </div>
+    <p class="video-watch__message">どうがが みつからなかったよ🥲</p>
   }
 </div>

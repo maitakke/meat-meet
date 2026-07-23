@@ -1,0 +1,148 @@
+.search-page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 24px;
+  min-height: 100%;
+  font-family: 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', 'Yu Gothic', sans-serif;
+  color: #3a3226;
+  background-color: #faf3e7;
+}
+
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.search-section__title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.search-section__empty {
+  margin: 0;
+  color: #6b6255;
+}
+
+.video-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.video-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 160px;
+  flex: 0 0 auto;
+  padding: 10px;
+  border: 3px solid #3a3226;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 4px 4px 0 #3a3226;
+  cursor: pointer;
+  text-align: left;
+}
+
+.video-chip:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+.video-chip__thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #3a3226;
+}
+
+.video-chip__title {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.channel-create {
+  display: flex;
+  gap: 8px;
+}
+
+.channel-create__input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid #3a3226;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #ffffff;
+}
+
+.channel-create__submit {
+  padding: 10px 20px;
+  border: 2px solid #3a3226;
+  border-radius: 16px;
+  background: #f4b93a;
+  color: #3a3226;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #3a3226;
+}
+
+.channel-create__submit:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}
+
+.channel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.channel-list__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 3px solid #3a3226;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.channel-list__name {
+  flex: 1;
+  font-weight: bold;
+}
+
+.channel-list__family {
+  font-size: 0.85rem;
+  color: #6fae5c;
+  font-weight: bold;
+}
+
+.channel-list__button {
+  padding: 8px 14px;
+  border: 2px solid #3a3226;
+  border-radius: 14px;
+  background: #4fb6e0;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #3a3226;
+}
+
+.channel-list__button--active {
+  background: #f2e9da;
+  color: #3a3226;
+}
+
+.channel-list__button:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
+}

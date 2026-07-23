@@ -1,0 +1,20 @@
+<div class="video-list">
+  @if (isLoading()) {
+    <p class="video-list__empty">よみこみちゅう…</p>
+  } @else if (videos().length === 0) {
+    <p class="video-list__empty">まだ どうがが ないよ🍃</p>
+  } @else {
+    <div class="video-grid">
+      @for (video of videos(); track video.id) {
+        <button type="button" class="video-card" (click)="onOpenVideo(video)">
+          <img class="video-card__thumb" [src]="thumbnailUrl(video)" alt="" />
+          <span class="video-card__title">{{ video.title }}</span>
+          <span class="video-card__family">{{ video.familyName }}</span>
+          @if (video.isPrivate) {
+            <span class="video-card__badge">🔒 げんてい</span>
+          }
+        </button>
+      }
+    </div>
+  }
+</div>

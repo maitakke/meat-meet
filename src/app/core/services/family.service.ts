@@ -68,4 +68,8 @@ export class FamilyService {
   async deleteFamilyUser(familyId: string, userId: string): Promise<void> {
     await deleteDoc(doc(this.firestore, 'families', familyId, 'users', userId));
   }
+
+  async deleteFamily(familyId: string): Promise<void> {
+    await deleteDoc(doc(this.firestore, 'families', familyId));
+  }
 }

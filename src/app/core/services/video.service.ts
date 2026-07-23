@@ -4,6 +4,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   or,
   orderBy,
@@ -54,6 +55,18 @@ export class VideoService {
     );
     const snapshot = await getDocs(q);
     return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Video);
+  }
+
+  async getVideo(videoId: string): Promise<Video | null> {
+    const snapshot = await getDoc(doc(this.firestore, 'videos', videoId));
+    return snapshot.exists() ? ({ id: snapshot.id, ...snapshot.data() } as Video) : null;
+  }
+
+  async listVideosByIds(videoIds: string[]): Promise<Video[]> {
+    const videos = await Promise.all(
+      videoIds.map((videoId) => this.getVideo(videoId).catch(() => null))
+    );
+    return videos.filter((video): video is Video => video !== null);
   }
 
   async listVideosByFamily(familyId: string): Promise<Video[]> {

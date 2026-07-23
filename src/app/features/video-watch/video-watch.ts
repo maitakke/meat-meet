@@ -1,15 +1,17 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, effect, inject, input, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { YouTubePlayer } from '@angular/youtube-player';
 import type * as YT from 'youtube';
+
+import { Channel, Video, VideoComment } from '../../core/models';
+import { ChannelService } from '../../core/services/channel.service';
+import { LikeService } from '../../core/services/like.service';
+import { SessionService } from '../../core/services/session.service';
+import { VideoService } from '../../core/services/video.service';
 
 // YT.PlayerState.ENDED の値。YT名前空間はUMDグローバルのため
 // モジュール内では列挙値を直接参照できず、数値で保持する。
 const PLAYER_STATE_ENDED = 0;
-
-interface Comment {
-  author: string;
-  text: string;
-}
 
 @Component({
   selector: 'app-video-watch',
@@ -18,8 +20,19 @@ interface Comment {
   styleUrl: './video-watch.css',
 })
 export class VideoWatch {
-  readonly videoId = input<string>('jNQXAC9IVRw');
-  readonly channelName = input<string>('ぶーぶーチャンネル');
+  /** ルートパラメータ ':id' (Firestoreの videos/{id}) にバインドされる。 */
+  readonly id = input<string>('');
+
+  private readonly videoService = inject(VideoService);
+  private readonly likeService = inject(LikeService);
+  private readonly channelService = inject(ChannelService);
+  private readonly sessionService = inject(SessionService);
+  private readonly router = inject(Router);
+
+  protected readonly video = signal<Video | null>(null);
+  protected readonly channel = signal<Channel | null>(null);
+  protected readonly comments = signal<VideoComment[]>([]);
+  protected readonly isLoading = signal(true);
 
   protected readonly showEndScreen = signal(false);
 
@@ -30,18 +43,47 @@ export class VideoWatch {
   };
 
   protected readonly isSubscribed = signal(false);
-
   protected readonly isLiked = signal(false);
-  protected readonly baseLikeCount = signal(12);
-  protected readonly likeCount = computed(
-    () => this.baseLikeCount() + (this.isLiked() ? 1 : 0)
-  );
+  protected readonly likeCount = signal(0);
 
-  protected readonly comments = signal<Comment[]>([
-    { author: 'まま', text: 'たのしいね〜' },
-    { author: 'ぱぱ', text: 'また みようね' },
-  ]);
   protected readonly newComment = signal('');
+
+  constructor() {
+    effect(() => {
+      const videoId = this.id();
+      if (videoId) {
+        void this.load(videoId);
+      }
+    });
+  }
+
+  private async load(videoId: string): Promise<void> {
+    this.isLoading.set(true);
+    this.showEndScreen.set(false);
+
+    const [video, comments, channel] = await Promise.all([
+      this.videoService.getVideo(videoId),
+      this.videoService.listComments(videoId),
+      this.channelService.findChannelForVideo(videoId),
+    ]);
+    this.video.set(video);
+    this.comments.set(comments);
+    this.channel.set(channel);
+
+    const user = this.sessionService.selectedUser();
+    const [liked, likeCount, subscribed] = await Promise.all([
+      user ? this.likeService.isLiked(videoId, user.id) : Promise.resolve(false),
+      this.likeService.countLikes(videoId),
+      user && channel
+        ? this.channelService.isSubscribed(channel.id, user.id)
+        : Promise.resolve(false),
+    ]);
+    this.isLiked.set(liked);
+    this.likeCount.set(likeCount);
+    this.isSubscribed.set(subscribed);
+
+    this.isLoading.set(false);
+  }
 
   protected onStateChange(event: YT.OnStateChangeEvent): void {
     if (event.data === PLAYER_STATE_ENDED) {
@@ -54,28 +96,75 @@ export class VideoWatch {
   }
 
   protected onBackToList(): void {
-    // TODO: 一覧画面のルーティング実装後に、実際の画面遷移に置き換える
     this.showEndScreen.set(false);
+    void this.router.navigateByUrl('/');
   }
 
-  protected onToggleSubscribe(): void {
-    this.isSubscribed.update((subscribed) => !subscribed);
+  protected async onToggleSubscribe(): Promise<void> {
+    const channel = this.channel();
+    const user = this.sessionService.selectedUser();
+    const familyId = this.sessionService.family()?.id;
+    if (!channel || !user || !familyId) {
+      return;
+    }
+
+    const wasSubscribed = this.isSubscribed();
+    this.isSubscribed.set(!wasSubscribed);
+    try {
+      if (wasSubscribed) {
+        await this.channelService.unsubscribe(channel.id, user.id);
+      } else {
+        await this.channelService.subscribe(channel.id, user.id, familyId);
+      }
+    } catch {
+      this.isSubscribed.set(wasSubscribed);
+    }
   }
 
-  protected onToggleLike(): void {
-    this.isLiked.update((liked) => !liked);
+  protected async onToggleLike(): Promise<void> {
+    const video = this.video();
+    const user = this.sessionService.selectedUser();
+    const familyId = this.sessionService.family()?.id;
+    if (!video || !user || !familyId) {
+      return;
+    }
+
+    const wasLiked = this.isLiked();
+    this.isLiked.set(!wasLiked);
+    this.likeCount.update((count) => count + (wasLiked ? -1 : 1));
+    try {
+      if (wasLiked) {
+        await this.likeService.unlike(video.id, user.id);
+      } else {
+        await this.likeService.like(video.id, user.id, familyId);
+      }
+    } catch {
+      this.isLiked.set(wasLiked);
+      this.likeCount.update((count) => count + (wasLiked ? 1 : -1));
+    }
   }
 
   protected onCommentInput(event: Event): void {
     this.newComment.set((event.target as HTMLInputElement).value);
   }
 
-  protected onAddComment(): void {
-    const text = this.newComment().trim();
-    if (!text) {
+  protected async onAddComment(): Promise<void> {
+    const content = this.newComment().trim();
+    const video = this.video();
+    const user = this.sessionService.selectedUser();
+    const family = this.sessionService.family();
+    if (!content || !video || !user || !family) {
       return;
     }
-    this.comments.update((list) => [...list, { author: 'あなた', text }]);
+
     this.newComment.set('');
+    await this.videoService.addComment(video.id, {
+      familyId: family.id,
+      familyName: family.familyName,
+      userId: user.id,
+      userName: user.name,
+      content,
+    });
+    this.comments.set(await this.videoService.listComments(video.id));
   }
 }

@@ -45,6 +45,14 @@ export const selectUserPageGuard: CanActivateFn = async () => {
   return sessionService.selectedUser() ? router.createUrlTree(['/']) : true;
 };
 
+/** 保護者専用画面用。子どもロールの場合はホームへリダイレクト。 */
+export const parentGuard: CanActivateFn = () => {
+  const sessionService = inject(SessionService);
+  const router = inject(Router);
+
+  return sessionService.role() === 'parent' ? true : router.createUrlTree(['/']);
+};
+
 /** ログイン・登録画面用。ログイン済みならメイン画面へリダイレクト。 */
 export const guestGuard: CanActivateFn = async () => {
   const authService = inject(AuthService);

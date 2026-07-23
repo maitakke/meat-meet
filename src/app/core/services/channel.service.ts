@@ -7,6 +7,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  limit,
   orderBy,
   query,
   serverTimestamp,
@@ -38,6 +39,16 @@ export class ChannelService {
     return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Channel);
   }
 
+  async listChannelsByFamily(familyId: string): Promise<Channel[]> {
+    const q = query(
+      collection(this.firestore, 'channels'),
+      where('familyId', '==', familyId),
+      orderBy('createdAt', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Channel);
+  }
+
   async createChannel(input: CreateChannelInput): Promise<string> {
     const ref = await addDoc(collection(this.firestore, 'channels'), {
       ...input,
@@ -51,6 +62,18 @@ export class ChannelService {
     await updateDoc(doc(this.firestore, 'channels', channelId), {
       videoIds: arrayUnion(videoId),
     });
+  }
+
+  /** この動画が含まれているチャンネルを1件だけ返す(なければnull)。 */
+  async findChannelForVideo(videoId: string): Promise<Channel | null> {
+    const q = query(
+      collection(this.firestore, 'channels'),
+      where('videoIds', 'array-contains', videoId),
+      limit(1)
+    );
+    const snapshot = await getDocs(q);
+    const [first] = snapshot.docs;
+    return first ? ({ id: first.id, ...first.data() } as Channel) : null;
   }
 
   private subscriptionId(channelId: string, userId: string): string {

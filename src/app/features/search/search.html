@@ -1,0 +1,57 @@
+<div class="search-page">
+  <section class="search-section">
+    <h1 class="search-section__title">❤️ いいねした どうが</h1>
+    @if (isLoading()) {
+      <p class="search-section__empty">よみこみちゅう…</p>
+    } @else if (likedVideos().length === 0) {
+      <p class="search-section__empty">まだ いいねした どうがが ないよ</p>
+    } @else {
+      <div class="video-row">
+        @for (video of likedVideos(); track video.id) {
+          <button type="button" class="video-chip" (click)="onOpenVideo(video)">
+            <img class="video-chip__thumb" [src]="thumbnailUrl(video)" alt="" />
+            <span class="video-chip__title">{{ video.title }}</span>
+          </button>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="search-section">
+    <h1 class="search-section__title">📺 アプリ内チャンネル</h1>
+
+    <div class="channel-create">
+      <input
+        class="channel-create__input"
+        type="text"
+        placeholder="あたらしい チャンネルの なまえ"
+        [value]="newChannelName()"
+        (input)="onNewChannelNameInput($event)"
+      />
+      <button type="button" class="channel-create__submit" (click)="onCreateChannel()">
+        つくる
+      </button>
+    </div>
+
+    @if (channels().length === 0) {
+      <p class="search-section__empty">まだ チャンネルが ないよ</p>
+    } @else {
+      <ul class="channel-list">
+        @for (channel of channels(); track channel.id) {
+          <li class="channel-list__item">
+            <span class="channel-list__name">{{ channel.channelName }}</span>
+            <span class="channel-list__family">{{ channel.familyName }}</span>
+            <button
+              type="button"
+              class="channel-list__button"
+              [class.channel-list__button--active]="isSubscribed(channel)"
+              (click)="onToggleSubscribe(channel)"
+            >
+              {{ isSubscribed(channel) ? '✅ とうろくずみ' : '🔔 とうろく' }}
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</div>
