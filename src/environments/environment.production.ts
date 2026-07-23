@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   // 招待制登録の「ひみつのことば」。関係者にだけ口頭やメッセージで共有する想定。
   // デプロイ前に必ず変更すること。
-  signupSecretWord: 'まいたけ',
+  signupSecretWord: 'ポイズン・シャワーまほうのちから',
   firebaseConfig: {
     apiKey: 'AIzaSyAa9WHZmxQ_4Y-nMJOxQgcCjH9XyLZB-lw',
     authDomain: 'meat-meet-fort.firebaseapp.com',
