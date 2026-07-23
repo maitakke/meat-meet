@@ -1,0 +1,37 @@
+<div class="auth-page">
+  <form class="auth-card" (submit)="$event.preventDefault(); onSubmit()">
+    <h1 class="auth-card__title">🏠 ログイン</h1>
+
+    @if (errorMessage()) {
+      <p class="auth-card__error">{{ errorMessage() }}</p>
+    }
+
+    <label class="auth-field">
+      <span class="auth-field__label">メールアドレス</span>
+      <input
+        class="auth-field__input"
+        type="email"
+        autocomplete="email"
+        [value]="email()"
+        (input)="onEmailInput($event)"
+      />
+    </label>
+
+    <label class="auth-field">
+      <span class="auth-field__label">パスワード</span>
+      <input
+        class="auth-field__input"
+        type="password"
+        autocomplete="current-password"
+        [value]="password()"
+        (input)="onPasswordInput($event)"
+      />
+    </label>
+
+    <button type="submit" class="auth-card__submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'ログインちゅう…' : 'ログインする' }}
+    </button>
+
+    <a class="auth-card__link" routerLink="/register">はじめての ひとは とうろく</a>
+  </form>
+</div>

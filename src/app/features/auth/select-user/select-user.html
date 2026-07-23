@@ -1,0 +1,18 @@
+<div class="select-user-page">
+  <h1 class="select-user-page__title">
+    👋 {{ familyName() }}の どなたですか？
+  </h1>
+
+  <div class="user-grid">
+    @for (user of familyUsers(); track user.id) {
+      <button
+        type="button"
+        class="user-card"
+        (click)="onSelect(user)"
+      >
+        <span class="user-card__avatar">{{ user.avatarUrl }}</span>
+        <span class="user-card__name">{{ user.name }}</span>
+      </button>
+    }
+  </div>
+</div>

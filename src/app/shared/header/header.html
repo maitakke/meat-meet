@@ -1,0 +1,28 @@
+@if (selectedUser(); as user) {
+  <header class="app-header">
+    <button
+      type="button"
+      class="app-header__menu-button"
+      (click)="onToggleMenu()"
+      aria-label="メニュー"
+    >
+      ☰
+    </button>
+
+    <div class="app-header__user">
+      <span class="app-header__avatar">{{ user.avatarUrl }}</span>
+      <span class="app-header__name">{{ user.name }}</span>
+    </div>
+
+    @if (isMenuOpen()) {
+      <div class="app-header__menu">
+        <button type="button" class="app-header__menu-item" (click)="onSwitchUser()">
+          🔄 ユーザーを きりかえる
+        </button>
+        <button type="button" class="app-header__menu-item" (click)="onLogout()">
+          🚪 ログアウト
+        </button>
+      </div>
+    }
+  </header>
+}

@@ -1,0 +1,86 @@
+<div class="auth-page">
+  <form class="auth-card" (submit)="$event.preventDefault(); onSubmit()">
+    <h1 class="auth-card__title">🎉 あたらしく とうろく</h1>
+
+    @if (errorMessage()) {
+      <p class="auth-card__error">{{ errorMessage() }}</p>
+    }
+
+    <label class="auth-field">
+      <span class="auth-field__label">かぞくの なまえ</span>
+      <input
+        class="auth-field__input"
+        type="text"
+        placeholder="例：まいたけファミリー"
+        [value]="familyName()"
+        (input)="onFamilyNameInput($event)"
+      />
+    </label>
+
+    <label class="auth-field">
+      <span class="auth-field__label">あなたの なまえ</span>
+      <input
+        class="auth-field__input"
+        type="text"
+        placeholder="例：ぱぱ"
+        [value]="yourName()"
+        (input)="onYourNameInput($event)"
+      />
+    </label>
+
+    <div class="auth-field">
+      <span class="auth-field__label">あいこんを えらんでね</span>
+      <div class="avatar-grid">
+        @for (avatar of avatarPresets; track avatar) {
+          <button
+            type="button"
+            class="avatar-grid__item"
+            [class.avatar-grid__item--active]="selectedAvatar() === avatar"
+            (click)="onSelectAvatar(avatar)"
+          >
+            {{ avatar }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <label class="auth-field">
+      <span class="auth-field__label">メールアドレス</span>
+      <input
+        class="auth-field__input"
+        type="email"
+        autocomplete="email"
+        [value]="email()"
+        (input)="onEmailInput($event)"
+      />
+    </label>
+
+    <label class="auth-field">
+      <span class="auth-field__label">パスワード</span>
+      <input
+        class="auth-field__input"
+        type="password"
+        autocomplete="new-password"
+        [value]="password()"
+        (input)="onPasswordInput($event)"
+      />
+    </label>
+
+    <label class="auth-field">
+      <span class="auth-field__label">🔑 ひみつのことば</span>
+      <input
+        class="auth-field__input"
+        type="text"
+        placeholder="かんけいしゃに きいてね"
+        [value]="secretWord()"
+        (input)="onSecretWordInput($event)"
+      />
+    </label>
+
+    <button type="submit" class="auth-card__submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'とうろくちゅう…' : 'とうろくする' }}
+    </button>
+
+    <a class="auth-card__link" routerLink="/login">もう アカウントが あるひとは ログイン</a>
+  </form>
+</div>

@@ -1,0 +1,89 @@
+.auth-page {
+  display: flex;
+  justify-content: center;
+  padding: 40px 24px;
+  min-height: 100vh;
+  font-family: 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', 'Yu Gothic', sans-serif;
+  color: #3a3226;
+  background-color: #faf3e7;
+}
+
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 420px;
+  padding: 28px 24px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 5px solid #3a3226;
+  box-shadow: 6px 6px 0 #3a3226;
+  align-self: flex-start;
+}
+
+.auth-card__title {
+  margin: 0 0 4px;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.auth-card__error {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #fbe4e4;
+  border: 2px solid #f2603c;
+  color: #b8341c;
+  font-size: 0.95rem;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-field__label {
+  font-size: 0.95rem;
+  font-weight: bold;
+}
+
+.auth-field__input {
+  padding: 12px 14px;
+  border: 2px solid #3a3226;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #faf3e7;
+}
+
+.auth-card__submit {
+  margin-top: 8px;
+  padding: 14px;
+  border: 3px solid #3a3226;
+  border-radius: 16px;
+  background: #4fb6e0;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #3a3226;
+}
+
+.auth-card__submit:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+.auth-card__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-card__link {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #3a3226;
+  text-decoration: underline;
+}

@@ -1,0 +1,70 @@
+.app-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  font-family: 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', 'Yu Gothic', sans-serif;
+  background: #ffffff;
+  border-bottom: 4px solid #3a3226;
+}
+
+.app-header__menu-button {
+  font-size: 1.4rem;
+  padding: 6px 12px;
+  border: 2px solid #3a3226;
+  border-radius: 12px;
+  background: #f4b93a;
+  cursor: pointer;
+}
+
+.app-header__user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.app-header__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  font-size: 1.3rem;
+  border-radius: 50%;
+  background: #faf3e7;
+  border: 2px solid #3a3226;
+}
+
+.app-header__name {
+  font-weight: bold;
+  color: #3a3226;
+}
+
+.app-header__menu {
+  position: absolute;
+  top: 100%;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 10px;
+  border: 3px solid #3a3226;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 4px 4px 0 #3a3226;
+}
+
+.app-header__menu-item {
+  padding: 10px 16px;
+  border: 2px solid #3a3226;
+  border-radius: 12px;
+  background: #faf3e7;
+  font-weight: bold;
+  color: #3a3226;
+  cursor: pointer;
+  white-space: nowrap;
+}

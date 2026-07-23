@@ -1,0 +1,61 @@
+.select-user-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 48px 24px;
+  min-height: 100vh;
+  font-family: 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', 'Yu Gothic', sans-serif;
+  color: #3a3226;
+  background-color: #faf3e7;
+}
+
+.select-user-page__title {
+  margin: 0;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.user-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  max-width: 640px;
+}
+
+.user-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 140px;
+  padding: 20px 12px;
+  border: 4px solid #3a3226;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 5px 5px 0 #3a3226;
+  cursor: pointer;
+}
+
+.user-card:active {
+  transform: translate(5px, 5px);
+  box-shadow: none;
+}
+
+.user-card__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  font-size: 2.2rem;
+  border-radius: 50%;
+  background: #f4b93a;
+  border: 2px solid #3a3226;
+}
+
+.user-card__name {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
