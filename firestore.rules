@@ -1,0 +1,66 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function canReadVideo(video) {
+      return video.isPrivate == false
+        || request.auth.uid in video.allowedFamilyIds
+        || request.auth.uid == video.familyId;
+    }
+
+    // 1. families / families/{familyId}/users
+    match /families/{familyId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isSignedIn() && request.auth.uid == familyId;
+
+      match /users/{userId} {
+        allow read: if isSignedIn();
+        allow create, update, delete: if isSignedIn() && request.auth.uid == familyId;
+      }
+    }
+
+    // 2. videos / videos/{videoId}/comments
+    match /videos/{videoId} {
+      allow read: if isSignedIn() && canReadVideo(resource.data);
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.familyId;
+      allow update, delete: if isSignedIn() && request.auth.uid == resource.data.familyId;
+
+      match /comments/{commentId} {
+        allow read: if isSignedIn()
+          && canReadVideo(get(/databases/$(database)/documents/videos/$(videoId)).data);
+        allow create: if isSignedIn() && request.auth.uid == request.resource.data.familyId;
+        allow update, delete: if isSignedIn() && request.auth.uid == resource.data.familyId;
+      }
+    }
+
+    // 3. channels
+    match /channels/{channelId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.familyId;
+      allow update, delete: if isSignedIn() && request.auth.uid == resource.data.familyId;
+    }
+
+    // 4. channel_subscriptions ("${channelId}_${userId}")
+    match /channel_subscriptions/{subscriptionId} {
+      allow read: if isSignedIn() && request.auth.uid == resource.data.familyId;
+      allow create: if isSignedIn()
+        && request.auth.uid == request.resource.data.familyId
+        && subscriptionId == request.resource.data.channelId + '_' + request.resource.data.userId;
+      allow delete: if isSignedIn() && request.auth.uid == resource.data.familyId;
+    }
+
+    // 5. likes ("${videoId}_${userId}")
+    match /likes/{likeId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && request.auth.uid == request.resource.data.familyId
+        && likeId == request.resource.data.videoId + '_' + request.resource.data.userId;
+      allow delete: if isSignedIn() && request.auth.uid == resource.data.familyId;
+    }
+  }
+}
