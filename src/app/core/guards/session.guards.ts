@@ -9,7 +9,8 @@ export const authGuard: CanActivateFn = async () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const user = await authService.waitForAuthReady();
+  await authService.waitForAuthReady();
+  const user = authService.currentUser();
   return user ? true : router.createUrlTree(['/login']);
 };
 
@@ -19,7 +20,8 @@ export const userSelectedGuard: CanActivateFn = async () => {
   const sessionService = inject(SessionService);
   const router = inject(Router);
 
-  const user = await authService.waitForAuthReady();
+  await authService.waitForAuthReady();
+  const user = authService.currentUser();
   if (!user) {
     return router.createUrlTree(['/login']);
   }
@@ -36,7 +38,8 @@ export const selectUserPageGuard: CanActivateFn = async () => {
   const sessionService = inject(SessionService);
   const router = inject(Router);
 
-  const user = await authService.waitForAuthReady();
+  await authService.waitForAuthReady();
+  const user = authService.currentUser();
   if (!user) {
     return router.createUrlTree(['/login']);
   }
@@ -58,6 +61,7 @@ export const guestGuard: CanActivateFn = async () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const user = await authService.waitForAuthReady();
+  await authService.waitForAuthReady();
+  const user = authService.currentUser();
   return user ? router.createUrlTree(['/']) : true;
 };
