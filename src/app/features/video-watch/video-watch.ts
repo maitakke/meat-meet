@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { YouTubePlayer } from '@angular/youtube-player';
 import type * as YT from 'youtube';
@@ -47,6 +47,11 @@ export class VideoWatch {
   protected readonly likeCount = signal(0);
 
   protected readonly newComment = signal('');
+
+  /** コメントを けす 操作は「ほごしゃ」ロールのみに見せる。 */
+  protected readonly canModerateComments = computed(
+    () => this.sessionService.role() === 'parent'
+  );
 
   constructor() {
     effect(() => {
@@ -141,6 +146,24 @@ export class VideoWatch {
     } catch {
       this.isLiked.set(wasLiked);
       this.likeCount.update((count) => count + (wasLiked ? 1 : -1));
+    }
+  }
+
+  protected async onDeleteComment(comment: VideoComment): Promise<void> {
+    const video = this.video();
+    if (!video || !this.canModerateComments()) {
+      return;
+    }
+    if (!confirm(`「${comment.userName}」の コメントを けしますか？`)) {
+      return;
+    }
+
+    const previous = this.comments();
+    this.comments.set(previous.filter((c) => c.id !== comment.id));
+    try {
+      await this.videoService.deleteComment(video.id, comment.id);
+    } catch {
+      this.comments.set(previous);
     }
   }
 
