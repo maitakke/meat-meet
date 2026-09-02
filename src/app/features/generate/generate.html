@@ -20,10 +20,26 @@
       </button>
     </div>
 
+    <div class="channel-create__field">
+      <span class="channel-create__label">アイコンを えらんでね</span>
+      <div class="icon-choice">
+        @for (icon of channelIcons; track icon) {
+          <button
+            type="button"
+            class="icon-choice__button"
+            [class.icon-choice__button--active]="newChannelIcon() === icon"
+            (click)="onSelectNewChannelIcon(icon)"
+          >
+            {{ icon }}
+          </button>
+        }
+      </div>
+    </div>
+
     @if (!isLoading() && myChannels().length > 0) {
       <ul class="my-channel-list">
         @for (channel of myChannels(); track channel.id) {
-          <li class="my-channel-list__item">📺 {{ channel.channelName }}</li>
+          <li class="my-channel-list__item">{{ channel.icon }} {{ channel.channelName }}</li>
         }
       </ul>
     }
@@ -52,7 +68,7 @@
                 [class.channel-choice__button--active]="selectedChannelId() === channel.id"
                 (click)="onSelectChannel(channel.id)"
               >
-                {{ channel.channelName }}
+                {{ channel.icon }} {{ channel.channelName }}
               </button>
             }
           </div>

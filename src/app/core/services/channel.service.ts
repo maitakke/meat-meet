@@ -5,6 +5,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  DocumentData,
   getDoc,
   getDocs,
   limit,
@@ -16,6 +17,7 @@ import {
   where,
 } from 'firebase/firestore';
 
+import { DEFAULT_CHANNEL_ICON } from '../channel-icons';
 import { FIRESTORE } from '../firebase.providers';
 import { Channel, ChannelSubscription } from '../models';
 
@@ -23,7 +25,13 @@ export interface CreateChannelInput {
   familyId: string;
   familyName: string;
   channelName: string;
+  icon: string;
   createdBy: string;
+}
+
+/** Firestoreのドキュメントを Channel に変換する。icon 未設定の古いデータは既定アイコンで補う。 */
+function toChannel(id: string, data: DocumentData): Channel {
+  return { icon: DEFAULT_CHANNEL_ICON, ...data, id } as Channel;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -36,7 +44,7 @@ export class ChannelService {
       orderBy('createdAt', 'desc')
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Channel);
+    return snapshot.docs.map((d) => toChannel(d.id, d.data()));
   }
 
   async listChannelsByFamily(familyId: string): Promise<Channel[]> {
@@ -46,12 +54,12 @@ export class ChannelService {
       orderBy('createdAt', 'desc')
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Channel);
+    return snapshot.docs.map((d) => toChannel(d.id, d.data()));
   }
 
   async getChannel(channelId: string): Promise<Channel | null> {
     const snapshot = await getDoc(doc(this.firestore, 'channels', channelId));
-    return snapshot.exists() ? ({ id: snapshot.id, ...snapshot.data() } as Channel) : null;
+    return snapshot.exists() ? toChannel(snapshot.id, snapshot.data()) : null;
   }
 
   async listChannelsByIds(channelIds: string[]): Promise<Channel[]> {
@@ -85,7 +93,7 @@ export class ChannelService {
     );
     const snapshot = await getDocs(q);
     const [first] = snapshot.docs;
-    return first ? ({ id: first.id, ...first.data() } as Channel) : null;
+    return first ? toChannel(first.id, first.data()) : null;
   }
 
   private subscriptionId(channelId: string, userId: string): string {

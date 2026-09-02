@@ -3,7 +3,7 @@
     <div class="channel-tags">
       @for (channel of myChannels(); track channel.id) {
         <button type="button" class="channel-tag" (click)="onOpenChannel(channel)">
-          📺 {{ channel.channelName }}
+          {{ channel.icon }} {{ channel.channelName }}
         </button>
       }
     </div>

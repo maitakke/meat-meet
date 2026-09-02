@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 
+import { CHANNEL_ICONS, DEFAULT_CHANNEL_ICON } from '../../core/channel-icons';
 import { extractYoutubeId } from '../../core/youtube.util';
 import { Channel, Family, Video } from '../../core/models';
 import { ChannelService } from '../../core/services/channel.service';
@@ -24,7 +25,9 @@ export class Generate {
   protected readonly myChannels = signal<Channel[]>([]);
   protected readonly isLoading = signal(true);
 
+  protected readonly channelIcons = CHANNEL_ICONS;
   protected readonly newChannelName = signal('');
+  protected readonly newChannelIcon = signal<string>(DEFAULT_CHANNEL_ICON);
   protected readonly isCreatingChannel = signal(false);
 
   protected readonly selectedChannelId = signal<string | null>(null);
@@ -47,6 +50,10 @@ export class Generate {
     this.newChannelName.set((event.target as HTMLInputElement).value);
   }
 
+  protected onSelectNewChannelIcon(icon: string): void {
+    this.newChannelIcon.set(icon);
+  }
+
   protected async onCreateChannel(): Promise<void> {
     const channelName = this.newChannelName().trim();
     const user = this.sessionService.selectedUser();
@@ -61,9 +68,11 @@ export class Generate {
         familyId: family.id,
         familyName: family.familyName,
         channelName,
+        icon: this.newChannelIcon(),
         createdBy: user.id,
       });
       this.newChannelName.set('');
+      this.newChannelIcon.set(DEFAULT_CHANNEL_ICON);
       this.myChannels.set(await this.channelService.listChannelsByFamily(family.id));
       this.selectedChannelId.set(channelId);
     } finally {
