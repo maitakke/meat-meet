@@ -11,6 +11,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
   where,
 } from 'firebase/firestore';
 
@@ -99,6 +100,21 @@ export class VideoService {
     await this.deleteCommentsForVideo(videoId);
     await this.likeService.deleteLikesForVideo(videoId);
     await deleteDoc(doc(this.firestore, 'videos', videoId));
+  }
+
+  /**
+   * チャンネル名の変更を、そのチャンネルに属する各動画の
+   * 非正規化フィールド channelName へ反映する。
+   */
+  async setChannelNameForVideos(
+    videoIds: string[],
+    channelName: string
+  ): Promise<void> {
+    await Promise.all(
+      videoIds.map((videoId) =>
+        updateDoc(doc(this.firestore, 'videos', videoId), { channelName })
+      )
+    );
   }
 
   async listComments(videoId: string): Promise<VideoComment[]> {

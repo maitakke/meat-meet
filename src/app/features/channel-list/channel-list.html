@@ -4,21 +4,87 @@
   @if (isLoading()) {
     <p class="channel-page__empty">よみこみちゅう…</p>
   } @else if (channel(); as ch) {
-    <header class="channel-header">
-      <span class="channel-header__avatar">{{ ch.icon }}</span>
-      <div class="channel-header__info">
-        <h1 class="channel-header__name">{{ ch.channelName }}</h1>
-        <span class="channel-header__family">{{ ch.familyName }}</span>
-      </div>
-      <button
-        type="button"
-        class="subscribe-button"
-        [class.subscribe-button--active]="isSubscribed()"
-        (click)="onToggleSubscribe()"
-      >
-        {{ isSubscribed() ? '✅ とうろくずみ' : '🔔 チャンネルとうろく' }}
-      </button>
-    </header>
+    @if (isEditing()) {
+      <section class="channel-edit">
+        <label class="channel-edit__field">
+          <span class="channel-edit__label">チャンネルめい</span>
+          <input
+            class="channel-edit__input"
+            type="text"
+            [value]="editName()"
+            (input)="onEditNameInput($event)"
+          />
+        </label>
+
+        <div class="channel-edit__field">
+          <span class="channel-edit__label">アイコン</span>
+          <div class="icon-choice">
+            @for (icon of channelIcons; track icon) {
+              <button
+                type="button"
+                class="icon-choice__button"
+                [class.icon-choice__button--active]="editIcon() === icon"
+                (click)="onSelectEditIcon(icon)"
+              >
+                {{ icon }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="channel-edit__actions">
+          <button
+            type="button"
+            class="channel-edit__save"
+            [disabled]="isSaving() || !editName().trim()"
+            (click)="onSaveEdit()"
+          >
+            {{ isSaving() ? 'ほぞんちゅう…' : 'ほぞん' }}
+          </button>
+          <button
+            type="button"
+            class="channel-edit__cancel"
+            [disabled]="isSaving()"
+            (click)="onCancelEdit()"
+          >
+            やめる
+          </button>
+          <button
+            type="button"
+            class="channel-edit__delete"
+            [disabled]="isSaving()"
+            (click)="onDeleteChannel()"
+          >
+            けす
+          </button>
+        </div>
+      </section>
+    } @else {
+      <header class="channel-header">
+        <span class="channel-header__avatar">{{ ch.icon }}</span>
+        <div class="channel-header__info">
+          <h1 class="channel-header__name">{{ ch.channelName }}</h1>
+          <span class="channel-header__family">{{ ch.familyName }}</span>
+        </div>
+        @if (canEdit()) {
+          <button
+            type="button"
+            class="channel-header__edit"
+            (click)="onStartEdit()"
+          >
+            ✏️ へんしゅう
+          </button>
+        }
+        <button
+          type="button"
+          class="subscribe-button"
+          [class.subscribe-button--active]="isSubscribed()"
+          (click)="onToggleSubscribe()"
+        >
+          {{ isSubscribed() ? '✅ とうろくずみ' : '🔔 チャンネルとうろく' }}
+        </button>
+      </header>
+    }
 
     @if (videos().length === 0) {
       <p class="channel-page__empty">まだ どうがが ないよ🍃</p>
