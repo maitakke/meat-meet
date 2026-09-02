@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="MeatMeet">
+  <rect width="512" height="512" fill="#f4b93a"/>
+  <ellipse cx="256" cy="260" rx="118" ry="94" fill="#f2a5b3" stroke="#3a3226" stroke-width="16"/>
+  <ellipse cx="220" cy="260" rx="18" ry="28" fill="#3a3226"/>
+  <ellipse cx="292" cy="260" rx="18" ry="28" fill="#3a3226"/>
+</svg>
