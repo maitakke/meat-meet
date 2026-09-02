@@ -86,6 +86,7 @@ export class Search {
 
   private async load(): Promise<void> {
     const user = this.sessionService.selectedUser();
+    const familyId = this.sessionService.family()?.id;
     this.isLoading.set(true);
 
     const [likedVideoIds, channels] = await Promise.all([
@@ -94,8 +95,8 @@ export class Search {
     ]);
     const [likedVideos, subscribedChannelIds] = await Promise.all([
       this.videoService.listVideosByIds(likedVideoIds),
-      user
-        ? this.channelService.listSubscribedChannelIds(user.id)
+      user && familyId
+        ? this.channelService.listSubscribedChannelIds(user.id, familyId)
         : Promise.resolve([]),
     ]);
 

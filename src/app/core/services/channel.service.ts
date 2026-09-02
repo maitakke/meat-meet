@@ -116,9 +116,13 @@ export class ChannelService {
     );
   }
 
-  async listSubscribedChannelIds(userId: string): Promise<string[]> {
+  async listSubscribedChannelIds(
+    userId: string,
+    familyId: string
+  ): Promise<string[]> {
     const q = query(
       collection(this.firestore, 'channel_subscriptions'),
+      where('familyId', '==', familyId),
       where('userId', '==', userId)
     );
     const snapshot = await getDocs(q);
