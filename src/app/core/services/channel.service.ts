@@ -84,6 +84,14 @@ export class ChannelService {
     });
   }
 
+  /** チャンネルの表示情報(名前・アイコン)を更新する。 */
+  async updateChannel(
+    channelId: string,
+    changes: { channelName?: string; icon?: string }
+  ): Promise<void> {
+    await updateDoc(doc(this.firestore, 'channels', channelId), changes);
+  }
+
   /** この動画が含まれているチャンネルを1件だけ返す(なければnull)。 */
   async findChannelForVideo(videoId: string): Promise<Channel | null> {
     const q = query(
