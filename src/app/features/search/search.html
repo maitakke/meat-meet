@@ -1,46 +1,51 @@
 <div class="search-page">
-  <section class="search-section">
-    <h1 class="search-section__title">❤️ いいねした どうが</h1>
-    @if (isLoading()) {
-      <p class="search-section__empty">よみこみちゅう…</p>
-    } @else if (likedVideos().length === 0) {
-      <p class="search-section__empty">まだ いいねした どうがが ないよ</p>
-    } @else {
-      <div class="video-row">
-        @for (video of likedVideos(); track video.id) {
-          <button type="button" class="video-chip" (click)="onOpenVideo(video)">
-            <img class="video-chip__thumb" [src]="thumbnailUrl(video)" alt="" />
-            <span class="video-chip__title">{{ video.title }}</span>
-          </button>
-        }
-      </div>
-    }
-  </section>
+  <div class="search-box">
+    <input
+      class="search-box__input"
+      type="text"
+      placeholder="チャンネル名・どうがタイトル・ユーザー名で けんさく"
+      [value]="query()"
+      (input)="onQueryInput($event)"
+    />
+  </div>
+
+  @if (normalizedQuery()) {
+    <section class="search-section">
+      <h1 class="search-section__title">🔍 どうがの けんさくけっか</h1>
+      @if (filteredVideos().length === 0) {
+        <p class="search-section__empty">みつからなかったよ</p>
+      } @else {
+        <ul class="result-list">
+          @for (video of filteredVideos(); track video.id) {
+            <li class="result-list__item">
+              <button type="button" class="result-list__link" (click)="onOpenVideo(video)">
+                <img class="result-list__thumb" [src]="thumbnailUrl(video)" alt="" />
+                <span class="result-list__info">
+                  <span class="result-list__title">{{ video.title }}</span>
+                  <span class="result-list__sub">{{ video.registeredByName }} ・ {{ video.channelName }}</span>
+                </span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
 
   <section class="search-section">
     <h1 class="search-section__title">📺 アプリ内チャンネル</h1>
-
-    <div class="channel-create">
-      <input
-        class="channel-create__input"
-        type="text"
-        placeholder="あたらしい チャンネルの なまえ"
-        [value]="newChannelName()"
-        (input)="onNewChannelNameInput($event)"
-      />
-      <button type="button" class="channel-create__submit" (click)="onCreateChannel()">
-        つくる
-      </button>
-    </div>
-
-    @if (channels().length === 0) {
-      <p class="search-section__empty">まだ チャンネルが ないよ</p>
+    @if (isLoading()) {
+      <p class="search-section__empty">よみこみちゅう…</p>
+    } @else if (filteredChannels().length === 0) {
+      <p class="search-section__empty">みつからなかったよ</p>
     } @else {
       <ul class="channel-list">
-        @for (channel of channels(); track channel.id) {
+        @for (channel of filteredChannels(); track channel.id) {
           <li class="channel-list__item">
-            <span class="channel-list__name">{{ channel.channelName }}</span>
-            <span class="channel-list__family">{{ channel.familyName }}</span>
+            <button type="button" class="channel-list__link" (click)="onOpenChannel(channel)">
+              <span class="channel-list__name">{{ channel.channelName }}</span>
+              <span class="channel-list__family">{{ channel.familyName }}</span>
+            </button>
             <button
               type="button"
               class="channel-list__button"

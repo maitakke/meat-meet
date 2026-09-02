@@ -9,10 +9,16 @@
       <span class="bottom-nav__label">けんさく</span>
     </a>
     @if (!isChild()) {
-      <a class="bottom-nav__item" routerLink="/mypage" routerLinkActive="bottom-nav__item--active">
-        <span class="bottom-nav__icon">📮</span>
-        <span class="bottom-nav__label">マイページ</span>
+      <a class="bottom-nav__item" routerLink="/generate" routerLinkActive="bottom-nav__item--active">
+        <span class="bottom-nav__icon">➕</span>
+        <span class="bottom-nav__label">つくる</span>
       </a>
+    }
+    <a class="bottom-nav__item" routerLink="/library" routerLinkActive="bottom-nav__item--active">
+      <span class="bottom-nav__icon">❤️</span>
+      <span class="bottom-nav__label">とうろくちゃんねる</span>
+    </a>
+    @if (!isChild()) {
       <a class="bottom-nav__item" routerLink="/settings" routerLinkActive="bottom-nav__item--active">
         <span class="bottom-nav__icon">⚙️</span>
         <span class="bottom-nav__label">せってい</span>

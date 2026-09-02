@@ -24,6 +24,9 @@ export interface CreateVideoInput {
   familyId: string;
   familyName: string;
   registeredBy: string;
+  registeredByName: string;
+  channelId: string;
+  channelName: string;
   isPrivate: boolean;
   allowedFamilyIds: string[];
 }

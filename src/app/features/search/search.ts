@@ -1,9 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Channel, Video } from '../../core/models';
 import { ChannelService } from '../../core/services/channel.service';
-import { LikeService } from '../../core/services/like.service';
 import { SessionService } from '../../core/services/session.service';
 import { VideoService } from '../../core/services/video.service';
 
@@ -16,15 +15,38 @@ import { VideoService } from '../../core/services/video.service';
 export class Search {
   private readonly videoService = inject(VideoService);
   private readonly channelService = inject(ChannelService);
-  private readonly likeService = inject(LikeService);
   private readonly sessionService = inject(SessionService);
   private readonly router = inject(Router);
 
-  protected readonly likedVideos = signal<Video[]>([]);
-  protected readonly channels = signal<Channel[]>([]);
+  protected readonly query = signal('');
+  protected readonly allChannels = signal<Channel[]>([]);
+  protected readonly allVideos = signal<Video[]>([]);
   protected readonly subscribedChannelIds = signal<Set<string>>(new Set());
-  protected readonly newChannelName = signal('');
   protected readonly isLoading = signal(true);
+
+  protected readonly normalizedQuery = computed(() => this.query().trim().toLowerCase());
+
+  protected readonly filteredChannels = computed(() => {
+    const q = this.normalizedQuery();
+    if (!q) {
+      return this.allChannels();
+    }
+    return this.allChannels().filter((channel) =>
+      channel.channelName.toLowerCase().includes(q)
+    );
+  });
+
+  protected readonly filteredVideos = computed(() => {
+    const q = this.normalizedQuery();
+    if (!q) {
+      return [];
+    }
+    return this.allVideos().filter(
+      (video) =>
+        video.title.toLowerCase().includes(q) ||
+        video.registeredByName.toLowerCase().includes(q)
+    );
+  });
 
   constructor() {
     void this.load();
@@ -36,6 +58,14 @@ export class Search {
 
   protected onOpenVideo(video: Video): void {
     this.router.navigate(['/watch', video.id]);
+  }
+
+  protected onOpenChannel(channel: Channel): void {
+    this.router.navigate(['/channel', channel.id]);
+  }
+
+  protected onQueryInput(event: Event): void {
+    this.query.set((event.target as HTMLInputElement).value);
   }
 
   protected isSubscribed(channel: Channel): boolean {
@@ -62,46 +92,21 @@ export class Search {
     }
   }
 
-  protected onNewChannelNameInput(event: Event): void {
-    this.newChannelName.set((event.target as HTMLInputElement).value);
-  }
-
-  protected async onCreateChannel(): Promise<void> {
-    const channelName = this.newChannelName().trim();
-    const user = this.sessionService.selectedUser();
-    const family = this.sessionService.family();
-    if (!channelName || !user || !family) {
-      return;
-    }
-
-    this.newChannelName.set('');
-    await this.channelService.createChannel({
-      familyId: family.id,
-      familyName: family.familyName,
-      channelName,
-      createdBy: user.id,
-    });
-    this.channels.set(await this.channelService.listChannels());
-  }
-
   private async load(): Promise<void> {
     const user = this.sessionService.selectedUser();
     const familyId = this.sessionService.family()?.id;
     this.isLoading.set(true);
 
-    const [likedVideoIds, channels] = await Promise.all([
-      user ? this.likeService.listLikedVideoIds(user.id) : Promise.resolve([]),
+    const [channels, videos, subscribedChannelIds] = await Promise.all([
       this.channelService.listChannels(),
-    ]);
-    const [likedVideos, subscribedChannelIds] = await Promise.all([
-      this.videoService.listVideosByIds(likedVideoIds),
+      familyId ? this.videoService.listVisibleVideos(familyId) : Promise.resolve([]),
       user && familyId
         ? this.channelService.listSubscribedChannelIds(user.id, familyId)
         : Promise.resolve([]),
     ]);
 
-    this.likedVideos.set(likedVideos);
-    this.channels.set(channels);
+    this.allChannels.set(channels);
+    this.allVideos.set(videos);
     this.subscribedChannelIds.set(new Set(subscribedChannelIds));
     this.isLoading.set(false);
   }

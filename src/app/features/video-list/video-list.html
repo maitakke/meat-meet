@@ -1,4 +1,14 @@
 <div class="video-list">
+  @if (!isLoading() && myChannels().length > 0) {
+    <div class="channel-tags">
+      @for (channel of myChannels(); track channel.id) {
+        <button type="button" class="channel-tag" (click)="onOpenChannel(channel)">
+          📺 {{ channel.channelName }}
+        </button>
+      }
+    </div>
+  }
+
   @if (isLoading()) {
     <p class="video-list__empty">よみこみちゅう…</p>
   } @else if (videos().length === 0) {

@@ -1,0 +1,38 @@
+<div class="channel-page">
+  <button type="button" class="channel-page__back" (click)="onBack()">← もどる</button>
+
+  @if (isLoading()) {
+    <p class="channel-page__empty">よみこみちゅう…</p>
+  } @else if (channel(); as ch) {
+    <header class="channel-header">
+      <span class="channel-header__avatar">📺</span>
+      <div class="channel-header__info">
+        <h1 class="channel-header__name">{{ ch.channelName }}</h1>
+        <span class="channel-header__family">{{ ch.familyName }}</span>
+      </div>
+      <button
+        type="button"
+        class="subscribe-button"
+        [class.subscribe-button--active]="isSubscribed()"
+        (click)="onToggleSubscribe()"
+      >
+        {{ isSubscribed() ? '✅ とうろくずみ' : '🔔 チャンネルとうろく' }}
+      </button>
+    </header>
+
+    @if (videos().length === 0) {
+      <p class="channel-page__empty">まだ どうがが ないよ🍃</p>
+    } @else {
+      <div class="video-grid">
+        @for (video of videos(); track video.id) {
+          <button type="button" class="video-card" (click)="onOpenVideo(video)">
+            <img class="video-card__thumb" [src]="thumbnailUrl(video)" alt="" />
+            <span class="video-card__title">{{ video.title }}</span>
+          </button>
+        }
+      </div>
+    }
+  } @else {
+    <p class="channel-page__empty">チャンネルが みつからなかったよ🥲</p>
+  }
+</div>
