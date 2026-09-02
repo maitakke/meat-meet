@@ -1,0 +1,153 @@
+<div class="generate-page">
+  <section class="generate-page__section">
+    <h1 class="generate-page__title">📺 チャンネルを つくる</h1>
+
+    <div class="channel-create">
+      <input
+        class="channel-create__input"
+        type="text"
+        placeholder="あたらしい チャンネルの なまえ"
+        [value]="newChannelName()"
+        (input)="onNewChannelNameInput($event)"
+      />
+      <button
+        type="button"
+        class="channel-create__submit"
+        [disabled]="isCreatingChannel()"
+        (click)="onCreateChannel()"
+      >
+        つくる
+      </button>
+    </div>
+
+    @if (!isLoading() && myChannels().length > 0) {
+      <ul class="my-channel-list">
+        @for (channel of myChannels(); track channel.id) {
+          <li class="my-channel-list__item">📺 {{ channel.channelName }}</li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section class="generate-page__section">
+    <h1 class="generate-page__title">🎬 どうがを とうろく</h1>
+
+    @if (errorMessage()) {
+      <p class="generate-page__error">{{ errorMessage() }}</p>
+    }
+
+    @if (!isLoading() && myChannels().length === 0) {
+      <p class="generate-page__empty">
+        さきに チャンネルを つくってね。どうがは かならず チャンネルに とうろくされるよ。
+      </p>
+    } @else {
+      <form class="register-form" (submit)="$event.preventDefault(); onSubmit()">
+        <div class="generate-page__field">
+          <span class="generate-page__label">チャンネルを えらんでね</span>
+          <div class="channel-choice">
+            @for (channel of myChannels(); track channel.id) {
+              <button
+                type="button"
+                class="channel-choice__button"
+                [class.channel-choice__button--active]="selectedChannelId() === channel.id"
+                (click)="onSelectChannel(channel.id)"
+              >
+                {{ channel.channelName }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <label class="generate-page__field">
+          <span class="generate-page__label">YouTubeの URL または どうがID</span>
+          <input
+            class="generate-page__input"
+            type="text"
+            [value]="youtubeInput()"
+            (input)="onYoutubeInput($event)"
+          />
+        </label>
+
+        <label class="generate-page__field">
+          <span class="generate-page__label">タイトル</span>
+          <input
+            class="generate-page__input"
+            type="text"
+            [value]="title()"
+            (input)="onTitleInput($event)"
+          />
+        </label>
+
+        <div class="generate-page__field">
+          <span class="generate-page__label">こうかいはんい</span>
+          <div class="visibility-choice">
+            <button
+              type="button"
+              class="visibility-choice__button"
+              [class.visibility-choice__button--active]="!isPrivate()"
+              (click)="onSetPrivate(false)"
+            >
+              🌏 みんなに オープン
+            </button>
+            <button
+              type="button"
+              class="visibility-choice__button"
+              [class.visibility-choice__button--active]="isPrivate()"
+              (click)="onSetPrivate(true)"
+            >
+              🔒 えらんだ かぞくにだけ
+            </button>
+          </div>
+        </div>
+
+        @if (isPrivate()) {
+          <div class="generate-page__field">
+            <span class="generate-page__label">みせる かぞくを えらんでね</span>
+            <div class="family-checkboxes">
+              @for (family of otherFamilies(); track family.id) {
+                <label class="family-checkbox">
+                  <input
+                    type="checkbox"
+                    [checked]="isAllowedFamily(family.id)"
+                    (change)="onToggleAllowedFamily(family.id)"
+                  />
+                  {{ family.familyName }}
+                </label>
+              }
+            </div>
+          </div>
+        }
+
+        <button type="submit" class="generate-page__submit" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'とうろくちゅう…' : 'とうろくする' }}
+        </button>
+      </form>
+    }
+  </section>
+
+  <section class="generate-page__section">
+    <h1 class="generate-page__title">📋 じぶんが とうろくした どうが</h1>
+
+    @if (isLoading()) {
+      <p class="generate-page__empty">よみこみちゅう…</p>
+    } @else if (myVideos().length === 0) {
+      <p class="generate-page__empty">まだ とうろくした どうがが ないよ</p>
+    } @else {
+      <ul class="my-video-list">
+        @for (video of myVideos(); track video.id) {
+          <li class="my-video-list__item">
+            <img class="my-video-list__thumb" [src]="thumbnailUrl(video)" alt="" />
+            <span class="my-video-list__title">{{ video.title }}</span>
+            <span class="my-video-list__channel">📺 {{ video.channelName }}</span>
+            @if (video.isPrivate) {
+              <span class="my-video-list__badge">🔒 げんてい</span>
+            }
+            <button type="button" class="my-video-list__delete" (click)="onDelete(video)">
+              けす
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</div>

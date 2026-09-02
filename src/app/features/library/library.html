@@ -1,0 +1,42 @@
+<div class="library-page">
+  <section class="library-section">
+    <h1 class="library-section__title">❤️ とうろくちゃんねる</h1>
+    @if (isLoading()) {
+      <p class="library-section__empty">よみこみちゅう…</p>
+    } @else if (subscribedChannels().length === 0) {
+      <p class="library-section__empty">まだ とうろくした チャンネルが ないよ</p>
+    } @else {
+      <ul class="channel-list">
+        @for (channel of subscribedChannels(); track channel.id) {
+          <li class="channel-list__item">
+            <button type="button" class="channel-list__link" (click)="onOpenChannel(channel)">
+              <span class="channel-list__name">{{ channel.channelName }}</span>
+              <span class="channel-list__family">{{ channel.familyName }}</span>
+            </button>
+            <button type="button" class="channel-list__button" (click)="onUnsubscribe(channel)">
+              ✅ とうろくずみ
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section class="library-section">
+    <h1 class="library-section__title">🤍 いいねした どうが</h1>
+    @if (isLoading()) {
+      <p class="library-section__empty">よみこみちゅう…</p>
+    } @else if (likedVideos().length === 0) {
+      <p class="library-section__empty">まだ いいねした どうがが ないよ</p>
+    } @else {
+      <div class="video-grid">
+        @for (video of likedVideos(); track video.id) {
+          <button type="button" class="video-card" (click)="onOpenVideo(video)">
+            <img class="video-card__thumb" [src]="thumbnailUrl(video)" alt="" />
+            <span class="video-card__title">{{ video.title }}</span>
+          </button>
+        }
+      </div>
+    }
+  </section>
+</div>

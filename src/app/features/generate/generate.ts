@@ -8,12 +8,12 @@ import { SessionService } from '../../core/services/session.service';
 import { VideoService } from '../../core/services/video.service';
 
 @Component({
-  selector: 'app-my-page',
+  selector: 'app-generate',
   imports: [],
-  templateUrl: './my-page.html',
-  styleUrl: './my-page.css',
+  templateUrl: './generate.html',
+  styleUrl: './generate.css',
 })
-export class MyPage {
+export class Generate {
   private readonly videoService = inject(VideoService);
   private readonly channelService = inject(ChannelService);
   private readonly familyService = inject(FamilyService);
@@ -22,9 +22,12 @@ export class MyPage {
   protected readonly myVideos = signal<Video[]>([]);
   protected readonly otherFamilies = signal<Family[]>([]);
   protected readonly myChannels = signal<Channel[]>([]);
-  protected readonly addingToChannelVideoId = signal<string | null>(null);
   protected readonly isLoading = signal(true);
 
+  protected readonly newChannelName = signal('');
+  protected readonly isCreatingChannel = signal(false);
+
+  protected readonly selectedChannelId = signal<string | null>(null);
   protected readonly youtubeInput = signal('');
   protected readonly title = signal('');
   protected readonly isPrivate = signal(false);
@@ -38,6 +41,38 @@ export class MyPage {
 
   protected thumbnailUrl(video: Video): string {
     return `https://i.ytimg.com/vi/${video.youtubeId}/hqdefault.jpg`;
+  }
+
+  protected onNewChannelNameInput(event: Event): void {
+    this.newChannelName.set((event.target as HTMLInputElement).value);
+  }
+
+  protected async onCreateChannel(): Promise<void> {
+    const channelName = this.newChannelName().trim();
+    const user = this.sessionService.selectedUser();
+    const family = this.sessionService.family();
+    if (!channelName || !user || !family || this.isCreatingChannel()) {
+      return;
+    }
+
+    this.isCreatingChannel.set(true);
+    try {
+      const channelId = await this.channelService.createChannel({
+        familyId: family.id,
+        familyName: family.familyName,
+        channelName,
+        createdBy: user.id,
+      });
+      this.newChannelName.set('');
+      this.myChannels.set(await this.channelService.listChannelsByFamily(family.id));
+      this.selectedChannelId.set(channelId);
+    } finally {
+      this.isCreatingChannel.set(false);
+    }
+  }
+
+  protected onSelectChannel(channelId: string): void {
+    this.selectedChannelId.set(channelId);
   }
 
   protected onYoutubeInput(event: Event): void {
@@ -73,7 +108,12 @@ export class MyPage {
     const title = this.title().trim();
     const family = this.sessionService.family();
     const user = this.sessionService.selectedUser();
+    const channel = this.myChannels().find((c) => c.id === this.selectedChannelId());
 
+    if (!channel) {
+      this.errorMessage.set('とうろくする チャンネルを えらんでね。');
+      return;
+    }
     if (!youtubeId) {
       this.errorMessage.set(
         'YouTubeの URLか どうがIDを ただしく にゅうりょくしてね。'
@@ -88,15 +128,20 @@ export class MyPage {
     this.errorMessage.set('');
     this.isSubmitting.set(true);
     try {
-      await this.videoService.createVideo({
+      const videoId = await this.videoService.createVideo({
         youtubeId,
         title,
         familyId: family.id,
         familyName: family.familyName,
         registeredBy: user.id,
+        registeredByName: user.name,
+        channelId: channel.id,
+        channelName: channel.channelName,
         isPrivate: this.isPrivate(),
         allowedFamilyIds: this.isPrivate() ? [...this.allowedFamilyIds()] : [],
       });
+      await this.channelService.addVideoToChannel(channel.id, videoId);
+
       this.youtubeInput.set('');
       this.title.set('');
       this.isPrivate.set(false);
@@ -112,19 +157,6 @@ export class MyPage {
     this.myVideos.update((videos) => videos.filter((v) => v.id !== video.id));
   }
 
-  protected onStartAddToChannel(video: Video): void {
-    this.addingToChannelVideoId.set(video.id);
-  }
-
-  protected onCancelAddToChannel(): void {
-    this.addingToChannelVideoId.set(null);
-  }
-
-  protected async onAddToChannel(video: Video, channel: Channel): Promise<void> {
-    await this.channelService.addVideoToChannel(channel.id, video.id);
-    this.addingToChannelVideoId.set(null);
-  }
-
   private async load(): Promise<void> {
     const familyId = this.sessionService.family()?.id;
     this.isLoading.set(true);
@@ -137,6 +169,9 @@ export class MyPage {
     this.myVideos.set(myVideos);
     this.otherFamilies.set(allFamilies.filter((f) => f.id !== familyId));
     this.myChannels.set(myChannels);
+    if (myChannels.length > 0) {
+      this.selectedChannelId.set(myChannels[0].id);
+    }
     this.isLoading.set(false);
   }
 }

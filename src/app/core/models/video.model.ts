@@ -7,6 +7,9 @@ export interface Video {
   familyId: string;
   familyName: string;
   registeredBy: string;
+  registeredByName: string;
+  channelId: string;
+  channelName: string;
   createdAt: Timestamp | FieldValue;
 
   isPrivate: boolean;

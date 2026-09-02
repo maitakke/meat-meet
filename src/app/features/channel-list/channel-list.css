@@ -1,4 +1,7 @@
-.video-list {
+.channel-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   padding: 24px;
   min-height: 100%;
   font-family: 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', 'Yu Gothic', sans-serif;
@@ -6,30 +9,80 @@
   background-color: #faf3e7;
 }
 
-.video-list__empty {
+.channel-page__back {
+  align-self: flex-start;
+  padding: 8px 16px;
+  border: 2px solid #3a3226;
+  border-radius: 14px;
+  background: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.channel-page__empty {
   text-align: center;
   font-size: 1.1rem;
   padding: 48px 0;
 }
 
-.channel-tags {
+.channel-header {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border: 3px solid #3a3226;
+  border-radius: 20px;
+  background: #ffffff;
 }
 
-.channel-tag {
-  padding: 8px 16px;
-  border: 3px solid #3a3226;
-  border-radius: 999px;
-  background: #ffffff;
+.channel-header__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  font-size: 1.8rem;
+  border-radius: 50%;
+  background: #f4b93a;
+  border: 2px solid #3a3226;
+}
+
+.channel-header__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.channel-header__name {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.channel-header__family {
+  font-size: 0.85rem;
+  color: #6fae5c;
+  font-weight: bold;
+}
+
+.subscribe-button {
+  font-size: 1rem;
+  padding: 10px 20px;
+  border: 2px solid #3a3226;
+  border-radius: 16px;
+  background: #f2603c;
+  color: #fff;
   font-weight: bold;
   cursor: pointer;
   box-shadow: 3px 3px 0 #3a3226;
 }
 
-.channel-tag:active {
+.subscribe-button--active {
+  background: #f2e9da;
+  color: #3a3226;
+}
+
+.subscribe-button:active {
   transform: translate(3px, 3px);
   box-shadow: none;
 }
@@ -70,19 +123,4 @@
 .video-card__title {
   font-size: 1.05rem;
   font-weight: bold;
-}
-
-.video-card__family {
-  font-size: 0.85rem;
-  color: #6fae5c;
-  font-weight: bold;
-}
-
-.video-card__badge {
-  align-self: flex-end;
-  font-size: 0.75rem;
-  padding: 3px 8px;
-  border-radius: 10px;
-  background: #f2e9da;
-  border: 1px solid #3a3226;
 }

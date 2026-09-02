@@ -45,9 +45,19 @@ export const routes: Routes = [
         loadComponent: () => import('./features/search/search').then((m) => m.Search),
       },
       {
-        path: 'mypage',
+        path: 'library',
         loadComponent: () =>
-          import('./features/my-page/my-page').then((m) => m.MyPage),
+          import('./features/library/library').then((m) => m.Library),
+      },
+      {
+        path: 'channel/:id',
+        loadComponent: () =>
+          import('./features/channel-list/channel-list').then((m) => m.ChannelList),
+      },
+      {
+        path: 'generate',
+        loadComponent: () =>
+          import('./features/generate/generate').then((m) => m.Generate),
         canActivate: [parentGuard],
       },
       {

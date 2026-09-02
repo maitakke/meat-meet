@@ -49,6 +49,18 @@ export class ChannelService {
     return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as Channel);
   }
 
+  async getChannel(channelId: string): Promise<Channel | null> {
+    const snapshot = await getDoc(doc(this.firestore, 'channels', channelId));
+    return snapshot.exists() ? ({ id: snapshot.id, ...snapshot.data() } as Channel) : null;
+  }
+
+  async listChannelsByIds(channelIds: string[]): Promise<Channel[]> {
+    const channels = await Promise.all(
+      channelIds.map((channelId) => this.getChannel(channelId).catch(() => null))
+    );
+    return channels.filter((channel): channel is Channel => channel !== null);
+  }
+
   async createChannel(input: CreateChannelInput): Promise<string> {
     const ref = await addDoc(collection(this.firestore, 'channels'), {
       ...input,
