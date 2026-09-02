@@ -52,7 +52,10 @@ service cloud.firestore {
 
     // 4. channel_subscriptions ("${channelId}_${userId}")
     match /channel_subscriptions/{subscriptionId} {
-      allow read: if isSignedIn() && request.auth.uid == resource.data.familyId;
+      // 未フォロー時は該当ドキュメントが存在しない。存在しない get を
+      // permission-denied にせず exists()==false で返せるよう null を許可する。
+      allow read: if isSignedIn()
+        && (resource == null || request.auth.uid == resource.data.familyId);
       allow create: if isSignedIn()
         && request.auth.uid == request.resource.data.familyId
         && subscriptionId == request.resource.data.channelId + '_' + request.resource.data.userId;
