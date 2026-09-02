@@ -5,6 +5,7 @@ export interface Channel {
   familyId: string;
   familyName: string;
   channelName: string;
+  icon: string;
   createdBy: string;
   videoIds: string[];
   createdAt: Timestamp | FieldValue;

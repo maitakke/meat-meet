@@ -10,7 +10,7 @@
         @for (channel of subscribedChannels(); track channel.id) {
           <li class="channel-list__item">
             <button type="button" class="channel-list__link" (click)="onOpenChannel(channel)">
-              <span class="channel-list__name">{{ channel.channelName }}</span>
+              <span class="channel-list__name">{{ channel.icon }} {{ channel.channelName }}</span>
               <span class="channel-list__family">{{ channel.familyName }}</span>
             </button>
             <button type="button" class="channel-list__button" (click)="onUnsubscribe(channel)">

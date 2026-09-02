@@ -5,7 +5,7 @@
     <p class="channel-page__empty">よみこみちゅう…</p>
   } @else if (channel(); as ch) {
     <header class="channel-header">
-      <span class="channel-header__avatar">📺</span>
+      <span class="channel-header__avatar">{{ ch.icon }}</span>
       <div class="channel-header__info">
         <h1 class="channel-header__name">{{ ch.channelName }}</h1>
         <span class="channel-header__family">{{ ch.familyName }}</span>
