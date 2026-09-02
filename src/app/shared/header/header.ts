@@ -5,7 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { SessionService } from '../../core/services/session.service';
 
 /** メニューを開いてから操作がないまま自動で閉じるまでの時間(ミリ秒)。 */
-const MENU_AUTO_CLOSE_MS = 5000;
+const MENU_AUTO_CLOSE_MS = 3000;
 
 @Component({
   selector: 'app-header',
