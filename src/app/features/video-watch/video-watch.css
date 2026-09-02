@@ -175,6 +175,25 @@
   color: #f2603c;
 }
 
+.comments__delete {
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: auto;
+  padding: 4px 12px;
+  border: 2px solid #3a3226;
+  border-radius: 12px;
+  background: #f2603c;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #3a3226;
+}
+
+.comments__delete:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
 .end-screen {
   display: flex;
   flex-direction: column;

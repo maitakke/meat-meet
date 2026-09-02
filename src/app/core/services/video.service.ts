@@ -108,6 +108,13 @@ export class VideoService {
     return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }) as VideoComment);
   }
 
+  /** コメントを1件削除する(保護者によるモデレーション用)。 */
+  async deleteComment(videoId: string, commentId: string): Promise<void> {
+    await deleteDoc(
+      doc(this.firestore, 'videos', videoId, 'comments', commentId)
+    );
+  }
+
   private async deleteCommentsForVideo(videoId: string): Promise<void> {
     const commentsRef = collection(this.firestore, 'videos', videoId, 'comments');
     const snapshot = await getDocs(commentsRef);
