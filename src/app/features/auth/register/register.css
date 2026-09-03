@@ -28,6 +28,13 @@
   text-align: center;
 }
 
+.auth-card__description {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  text-align: center;
+  color: #6b6255;
+}
+
 .auth-card__error {
   margin: 0;
   padding: 10px 14px;

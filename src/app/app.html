@@ -1,6 +1,6 @@
 <div class="app-shell">
   <app-header></app-header>
-  <main class="app-shell__content">
+  <main class="app-shell__content" [class.app-shell__content--with-nav]="selectedUser()">
     <router-outlet></router-outlet>
   </main>
   <app-bottom-nav></app-bottom-nav>

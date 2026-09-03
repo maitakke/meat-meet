@@ -4,13 +4,15 @@
   } @else if (video(); as v) {
     @if (!showEndScreen()) {
       <div class="video-frame">
-        <youtube-player
-          [videoId]="v.youtubeId"
-          [playerVars]="playerVars"
-          [width]="640"
-          [height]="360"
-          (stateChange)="onStateChange($event)"
-        ></youtube-player>
+        <div class="video-frame__inner">
+          <youtube-player
+            [videoId]="v.youtubeId"
+            [playerVars]="playerVars"
+            [width]="640"
+            [height]="360"
+            (stateChange)="onStateChange($event)"
+          ></youtube-player>
+        </div>
       </div>
 
       <div class="video-panel">
