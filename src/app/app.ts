@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 
+import { SessionService } from './core/services/session.service';
 import { BottomNav } from './shared/bottom-nav/bottom-nav';
 import { Header } from './shared/header/header';
 
@@ -15,6 +16,7 @@ export class App {
   protected readonly title = signal('meat-meet');
 
   private readonly swUpdate = inject(SwUpdate);
+  protected readonly selectedUser = inject(SessionService).selectedUser;
 
   constructor() {
     // 新しいバージョンが用意できたら、確認のうえリロードして反映する。

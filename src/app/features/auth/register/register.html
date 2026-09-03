@@ -1,6 +1,7 @@
 <div class="auth-page">
   <form class="auth-card" (submit)="$event.preventDefault(); onSubmit()">
     <h1 class="auth-card__title">🎉 あたらしく とうろく</h1>
+    <p class="auth-card__description">はじめは おとなが とうろくしよう</p>
 
     @if (errorMessage()) {
       <p class="auth-card__error">{{ errorMessage() }}</p>
@@ -22,7 +23,7 @@
       <input
         class="auth-field__input"
         type="text"
-        placeholder="例：ぱぱ"
+        placeholder="例：とーちゃん"
         [value]="yourName()"
         (input)="onYourNameInput($event)"
       />

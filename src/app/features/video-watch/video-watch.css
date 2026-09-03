@@ -11,11 +11,28 @@
 }
 
 .video-frame {
+  width: 100%;
+  max-width: 640px;
   padding: 16px;
   border-radius: 24px;
   background: #ffffff;
   border: 6px solid #3a3226;
   box-shadow: 6px 6px 0 #3a3226;
+}
+
+.video-frame__inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.video-frame__inner ::ng-deep iframe {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .video-watch__message {
@@ -27,7 +44,8 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
-  width: 640px;
+  width: 100%;
+  max-width: 640px;
   padding: 20px 24px;
   border-radius: 20px;
   background: #ffffff;
@@ -200,8 +218,10 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  width: 640px;
-  height: 360px;
+  width: 100%;
+  max-width: 640px;
+  min-height: 280px;
+  padding: 32px 24px;
   border-radius: 24px;
   background: #faf3e7;
   border: 6px solid #3a3226;
@@ -217,7 +237,8 @@
   color: #fff;
   font-weight: bold;
   cursor: pointer;
-  min-width: 320px;
+  width: 100%;
+  max-width: 320px;
   box-shadow: 4px 4px 0 #3a3226;
 }
 
