@@ -66,23 +66,25 @@
           <h1 class="channel-header__name">{{ ch.channelName }}</h1>
           <span class="channel-header__family">{{ ch.familyName }}</span>
         </div>
-        @if (canEdit()) {
+        <div class="channel-header__actions">
+          @if (canEdit()) {
+            <button
+              type="button"
+              class="channel-header__edit"
+              (click)="onStartEdit()"
+            >
+              ✏️ へんしゅう
+            </button>
+          }
           <button
             type="button"
-            class="channel-header__edit"
-            (click)="onStartEdit()"
+            class="subscribe-button"
+            [class.subscribe-button--active]="isSubscribed()"
+            (click)="onToggleSubscribe()"
           >
-            ✏️ へんしゅう
+            {{ isSubscribed() ? '✅ とうろくずみ' : '🔔 チャンネルとうろく' }}
           </button>
-        }
-        <button
-          type="button"
-          class="subscribe-button"
-          [class.subscribe-button--active]="isSubscribed()"
-          (click)="onToggleSubscribe()"
-        >
-          {{ isSubscribed() ? '✅ とうろくずみ' : '🔔 チャンネルとうろく' }}
-        </button>
+        </div>
       </header>
     }
 

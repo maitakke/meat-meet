@@ -61,7 +61,7 @@
           <ul class="comments__list">
             @for (comment of comments(); track comment.id) {
               <li class="comments__item">
-                <span class="comments__author">{{ comment.userName }}（{{ comment.familyName }}）</span>
+                <span class="comments__author">{{ comment.userName }}</span>
                 <span class="comments__text">{{ comment.content }}</span>
                 @if (canModerateComments()) {
                   <button

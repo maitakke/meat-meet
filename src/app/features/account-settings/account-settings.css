@@ -59,6 +59,7 @@
 
 .member-list__avatar {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 40px;
@@ -71,14 +72,23 @@
 
 .member-list__name {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-weight: bold;
 }
 
 .member-list__role {
+  flex-shrink: 0;
+  white-space: nowrap;
   font-size: 0.8rem;
   padding: 3px 8px;
   border-radius: 10px;
   background: #f2e9da;
+}
+
+.member-list__actions {
+  display: flex;
+  gap: 10px;
 }
 
 .member-list__button {
@@ -215,4 +225,15 @@
 .danger-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .member-list__item {
+    flex-wrap: wrap;
+  }
+
+  .member-list__actions {
+    flex-basis: 100%;
+    justify-content: flex-end;
+  }
 }

@@ -65,6 +65,7 @@
 
 .channel-row__avatar {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 48px;
@@ -245,4 +246,19 @@
 .end-screen__button:active {
   transform: translate(4px, 4px);
   box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .channel-row {
+    flex-wrap: wrap;
+  }
+
+  .channel-row__name {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .subscribe-button {
+    flex-basis: 100%;
+  }
 }
