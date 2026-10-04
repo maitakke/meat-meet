@@ -7,7 +7,7 @@
   font-family: 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', 'Yu Gothic', sans-serif;
   color: #3a3226;
   background-color: #faf3e7;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg%3E%3Ccircle cx='20' cy='24' r='9' fill='%23f4b93a'/%3E%3Cpolygon points='70,10 82,32 58,32' fill='%23f2603c'/%3E%3Crect x='108' y='14' width='16' height='16' rx='4' fill='%234fb6e0'/%3E%3Ccircle cx='115' cy='75' r='6' fill='%236fae5c'/%3E%3Cpolygon points='30,80 42,102 18,102' fill='%23f2a5b3'/%3E%3Crect x='55' y='95' width='14' height='14' rx='4' fill='%23f4b93a'/%3E%3Ccircle cx='90' cy='115' r='8' fill='%234fb6e0'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url('/pattern.svg');
 }
 
 .video-frame {
@@ -65,6 +65,7 @@
 
 .channel-row__avatar {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 48px;
@@ -245,4 +246,19 @@
 .end-screen__button:active {
   transform: translate(4px, 4px);
   box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .channel-row {
+    flex-wrap: wrap;
+  }
+
+  .channel-row__name {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .subscribe-button {
+    flex-basis: 100%;
+  }
 }

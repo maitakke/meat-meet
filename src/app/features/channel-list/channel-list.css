@@ -37,6 +37,7 @@
 
 .channel-header__avatar {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
   width: 56px;
@@ -49,6 +50,8 @@
 
 .channel-header__info {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -63,6 +66,12 @@
   font-size: 0.85rem;
   color: #6fae5c;
   font-weight: bold;
+}
+
+.channel-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .channel-header__edit {
@@ -238,4 +247,15 @@
 .video-card__title {
   font-size: 1.05rem;
   font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .channel-header {
+    flex-wrap: wrap;
+  }
+
+  .channel-header__actions {
+    flex-basis: 100%;
+    justify-content: flex-end;
+  }
 }

@@ -53,14 +53,16 @@
             <span class="member-list__avatar">{{ user.avatarUrl }}</span>
             <span class="member-list__name">{{ user.name }}</span>
             <span class="member-list__role">{{ user.role === 'parent' ? 'ほごしゃ' : 'こども' }}</span>
-            <button type="button" class="member-list__button" (click)="onStartEdit(user)">へんしゅう</button>
-            <button
-              type="button"
-              class="member-list__button member-list__button--danger"
-              (click)="onDeleteUser(user)"
-            >
-              けす
-            </button>
+            <div class="member-list__actions">
+              <button type="button" class="member-list__button" (click)="onStartEdit(user)">へんしゅう</button>
+              <button
+                type="button"
+                class="member-list__button member-list__button--danger"
+                (click)="onDeleteUser(user)"
+              >
+                けす
+              </button>
+            </div>
           }
         </li>
       }
