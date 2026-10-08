@@ -33,14 +33,66 @@
           </div>
         }
 
-        <button
-          type="button"
-          class="like-button"
-          [class.like-button--active]="isLiked()"
-          (click)="onToggleLike()"
-        >
-          {{ isLiked() ? '❤️' : '🤍' }} いいね {{ likeCount() }}
-        </button>
+        <div class="like-area">
+          <div class="like-anchor">
+            <button
+              type="button"
+              class="like-button"
+              [class.like-button--active]="isLiked()"
+              (click)="onToggleLike()"
+            >
+              {{ isLiked() ? '❤️' : '🤍' }} いいね {{ likeCount() }}
+            </button>
+
+            @if (likers().length > 0) {
+              <!-- PC: いいねボタンにマウスを乗せると全員の一覧が出る -->
+              <div class="liker-popover" role="tooltip">
+                <p class="liker-popover__title">いいねした ひと</p>
+                <ul class="liker-popover__list">
+                  @for (liker of likers(); track liker.id) {
+                    <li class="liker">
+                      <span class="liker__avatar">{{ liker.avatarUrl }}</span>
+                      <span class="liker__name">{{ liker.name }}</span>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+
+          @if (likers().length > 0) {
+            <div class="liker-summary">
+              @for (liker of likerPreview(); track liker.id) {
+                <span class="liker">
+                  <span class="liker__avatar">{{ liker.avatarUrl }}</span>
+                  <span class="liker__name">{{ liker.name }}</span>
+                </span>
+              }
+              @if (hiddenLikerCount() > 0) {
+                <button
+                  type="button"
+                  class="liker-summary__more"
+                  [attr.aria-expanded]="isLikerListOpen()"
+                  (click)="onToggleLikerList()"
+                >
+                  {{ isLikerListOpen() ? 'とじる' : 'ほか ' + hiddenLikerCount() + 'にん' }}
+                </button>
+              }
+              <span class="liker-summary__suffix">が いいね</span>
+            </div>
+
+            @if (isLikerListOpen()) {
+              <ul class="liker-list">
+                @for (liker of likers(); track liker.id) {
+                  <li class="liker">
+                    <span class="liker__avatar">{{ liker.avatarUrl }}</span>
+                    <span class="liker__name">{{ liker.name }}</span>
+                  </li>
+                }
+              </ul>
+            }
+          }
+        </div>
 
         <div class="comments">
           <h2 class="comments__title">コメント</h2>

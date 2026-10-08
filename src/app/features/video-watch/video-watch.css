@@ -104,8 +104,18 @@
   box-shadow: none;
 }
 
+.like-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.like-anchor {
+  position: relative;
+}
+
 .like-button {
-  align-self: flex-start;
   font-size: 1.1rem;
   padding: 12px 24px;
   border: 2px solid #3a3226;
@@ -125,6 +135,118 @@
 .like-button:active {
   transform: translate(3px, 3px);
   box-shadow: none;
+}
+
+.liker {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: bold;
+}
+
+.liker__avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 0.9rem;
+  border-radius: 50%;
+  background: #f2e9da;
+  border: 1px solid #3a3226;
+}
+
+.liker__name {
+  overflow-wrap: anywhere;
+}
+
+.liker-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 0.9rem;
+}
+
+.liker-summary__more {
+  padding: 2px 10px;
+  border: 1px solid #3a3226;
+  border-radius: 12px;
+  background: #fff;
+  color: #3a3226;
+  font-size: 0.85rem;
+  font-weight: bold;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.liker-summary__suffix {
+  white-space: nowrap;
+}
+
+.liker-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 0;
+  padding: 10px 12px;
+  list-style: none;
+  font-size: 0.9rem;
+  border: 2px solid #3a3226;
+  border-radius: 12px;
+  background: #fff;
+}
+
+/* PC 用のホバー一覧。ホバーできない端末(スマホ)では出さない。 */
+.liker-popover {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 10;
+  min-width: 180px;
+  max-width: 280px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 10px 12px;
+  border: 2px solid #3a3226;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 3px 3px 0 #3a3226;
+}
+
+/* ボタンと一覧のすき間をマウスが通っても一覧が消えないようにする */
+.liker-popover::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+}
+
+@media (hover: hover) {
+  .like-anchor:hover .liker-popover,
+  .like-anchor:focus-within .liker-popover {
+    display: block;
+  }
+}
+
+.liker-popover__title {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  color: #6b5f4f;
+}
+
+.liker-popover__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
 }
 
 .comments {

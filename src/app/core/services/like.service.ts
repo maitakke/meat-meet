@@ -14,6 +14,12 @@ import {
 import { FIRESTORE } from '../firebase.providers';
 import { Like } from '../models';
 
+/** createdAt を数値(ミリ秒)にする。書き込み直後で未確定の場合は末尾に並べる。 */
+function likedAtMillis(like: Like): number {
+  const createdAt = like.createdAt as { toMillis?: () => number } | null;
+  return createdAt?.toMillis?.() ?? Number.MAX_SAFE_INTEGER;
+}
+
 @Injectable({ providedIn: 'root' })
 export class LikeService {
   private readonly firestore = inject(FIRESTORE);
@@ -29,13 +35,15 @@ export class LikeService {
     return snapshot.exists();
   }
 
-  async countLikes(videoId: string): Promise<number> {
+  /** 指定した動画についた「いいね」を、押された順(古い順)に返す。 */
+  async listLikes(videoId: string): Promise<Like[]> {
     const q = query(
       collection(this.firestore, 'likes'),
       where('videoId', '==', videoId)
     );
     const snapshot = await getDocs(q);
-    return snapshot.size;
+    const likes = snapshot.docs.map((d) => ({ ...d.data(), id: d.id }) as Like);
+    return likes.sort((a, b) => likedAtMillis(a) - likedAtMillis(b));
   }
 
   async like(videoId: string, userId: string, familyId: string): Promise<void> {
