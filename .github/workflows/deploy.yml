@@ -1,0 +1,70 @@
+# GitHub Actions：コードがプッシュされたら、自動でテスト・ビルドして Firebase に公開する
+#
+# - main ブランチ        → 本番（https://meat-meet-fort.web.app）とセキュリティルール・インデックスに公開
+# - 開発用ブランチ        → プレビュー用URL（チャンネル「dev」）にだけ公開。本番とルールは変えない
+#   ※ プレビューも本番と同じデータベースを使うので、確認はテスト用の家族で行うこと
+name: Firebase に公開
+
+on:
+  push:
+    branches:
+      - main
+      - claude/upbeat-carson-8k7xus
+  # GitHub の画面から手動で実行したとき（Actions タブの「Run workflow」ボタン）
+  workflow_dispatch:
+
+# 公開が同時に2つ走らないようにする（後から来たものは前の完了を待つ）
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  # firebase コマンドの版（package.json には入れず、ここで固定する）
+  FIREBASE_TOOLS: firebase-tools@15.32.1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: コードを取得
+        uses: actions/checkout@v5
+
+      - name: Node.js を準備
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: ライブラリをインストール
+        run: npm ci
+
+      - name: ユニットテスト
+        run: npx ng test --watch=false
+
+      - name: ビルド
+        run: npm run build
+
+      - name: Firebase の鍵を準備
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$SERVICE_ACCOUNT_JSON" ]; then
+            echo "::error::GitHub の Secrets に FIREBASE_SERVICE_ACCOUNT が登録されていません。"
+            exit 1
+          fi
+          # 鍵をファイルに書き出し、firebase コマンドが読めるようにする（このファイルは実行後に破棄される）
+          printf '%s' "$SERVICE_ACCOUNT_JSON" > "$RUNNER_TEMP/service-account.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/service-account.json" >> "$GITHUB_ENV"
+
+      - name: 本番に公開（Hosting とセキュリティルール・インデックス）
+        if: github.ref_name == 'main'
+        run: npx -y "$FIREBASE_TOOLS" deploy --only hosting,firestore:rules,firestore:indexes --project meat-meet-fort --non-interactive
+
+      - name: プレビュー用URLに公開（Hosting のみ・30日で期限切れ）
+        if: github.ref_name != 'main'
+        run: |
+          npx -y "$FIREBASE_TOOLS" hosting:channel:deploy dev --expires 30d --project meat-meet-fort --non-interactive | tee "$RUNNER_TEMP/channel.log"
+          # プレビュー用URLを、Actions の実行結果のページに表示する
+          URL=$(grep -oE 'https://meat-meet-fort--dev-[a-z0-9-]+\.web\.app' "$RUNNER_TEMP/channel.log" | head -1)
+          echo "### プレビュー用URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "$URL" >> "$GITHUB_STEP_SUMMARY"
