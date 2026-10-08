@@ -153,11 +153,15 @@
         @for (video of myVideos(); track video.id) {
           <li class="my-video-list__item">
             <img class="my-video-list__thumb" [src]="thumbnailUrl(video)" alt="" />
-            <span class="my-video-list__title">{{ video.title }}</span>
-            <span class="my-video-list__channel">📺 {{ video.channelName }}</span>
-            @if (video.isPrivate) {
-              <span class="my-video-list__badge">🔒 げんてい</span>
-            }
+            <div class="my-video-list__body">
+              <span class="my-video-list__title">{{ video.title }}</span>
+              <div class="my-video-list__meta">
+                <span class="my-video-list__channel">📺 {{ video.channelName }}</span>
+                @if (video.isPrivate) {
+                  <span class="my-video-list__badge">🔒 げんてい</span>
+                }
+              </div>
+            </div>
             <button type="button" class="my-video-list__delete" (click)="onDelete(video)">
               けす
             </button>
